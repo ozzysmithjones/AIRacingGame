@@ -527,6 +527,8 @@ void CleanupDevice()
     if( g_pImmediateContext ) g_pImmediateContext->Release();
     if( g_pd3dDevice1 ) g_pd3dDevice1->Release();
     if( g_pd3dDevice ) g_pd3dDevice->Release();
+
+    g_AIManager.Release();
 }
 
 
@@ -616,13 +618,19 @@ void Render()
     static float deltaTime = 0.0f;
     static ULONGLONG timeStart = 0;
     ULONGLONG timeCur = GetTickCount64();
-    if( timeStart == 0 )
+    if (timeStart == 0)
         timeStart = timeCur;
-    deltaTime = ( timeCur - timeStart ) / 1000.0f;
-	timeStart = timeCur;
 
-    Update(deltaTime);
+    deltaTime = (timeCur - timeStart) / 1000.0f;
+    timeStart = timeCur;
+
+    if (deltaTime <= 0) 
+    {
+        return;
+    }
     
+    Update(deltaTime);
+
     // Clear the back buffer
     g_pImmediateContext->ClearRenderTargetView( g_pRenderTargetView, Colors::AntiqueWhite );
 

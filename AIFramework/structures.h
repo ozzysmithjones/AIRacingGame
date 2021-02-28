@@ -1,4 +1,6 @@
 #pragma once
+#define PI 3.1415926535f
+
 using namespace std;
 using namespace DirectX;
 

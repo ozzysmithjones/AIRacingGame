@@ -10,6 +10,8 @@ HRESULT	Vehicle::initMesh(ID3D11Device* pd3dDevice)
 
 	m_maxSpeed = 200;
 	m_currentSpeed = m_maxSpeed;
+	m_currentSpeedAlpha = 1;
+	m_currentAngularVelocity = 1.0f;
 	setVehiclePosition(Vector2D(0, 0));
 
 	m_lastPosition = Vector2D(0, 0);
@@ -19,34 +21,52 @@ HRESULT	Vehicle::initMesh(ID3D11Device* pd3dDevice)
 
 void Vehicle::update(const float deltaTime)
 {
-	// consider replacing with force based acceleration / velocity calculations
-	Vector2D vecTo = m_positionTo - m_currentPosition;
-	float velocity = deltaTime * m_currentSpeed;
+	Vector2D diff = m_positionTo - m_currentPosition;
+	if (diff.LengthSq() > 9.0f)
+	{
+		m_targetRotation = atan2f(diff.y, diff.x);
+		float angleStep = deltaTime * PI * m_currentAngularVelocity;
+		float clockwise = getClockwise(m_radianRotation, m_targetRotation);
 
-	float length = (float)vecTo.Length();
-	// if the distance to the end point is less than the car would move, then only move that distance. 
-	if (length > 0) {
-		vecTo.Normalize();
-		if(length > velocity)
-			vecTo *= velocity;
-		else
-			vecTo *= length;
+		//rotation, direction and position
+		m_radianRotation = addRadian(clockwise * angleStep, m_radianRotation);	
+		Vector2D direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
 
-		m_currentPosition += vecTo;
+		//work out turning circle, and slow down if the target position is in it.
+		SlowInTurnCircle(deltaTime,clockwise, direction);
+
+		m_currentPosition += direction * deltaTime * m_currentSpeed;
 	}
 
-	// rotate the object based on its last & current position
-	Vector2D diff = m_currentPosition - m_lastPosition;
-	if (diff.Length() > 0) { // if zero then don't update rotation
-		diff.Normalize();
-		m_radianRotation = atan2f(diff.y, diff.x); // this is used by DrawableGameObject to set the rotation
-	}
-	m_lastPosition = m_currentPosition;
-
-	// set the current poistion for the drawablegameobject
+	// set the current position for the drawable gameobject
 	setPosition(XMFLOAT3((float)m_currentPosition.x, (float)m_currentPosition.y, 0));
 
 	DrawableGameObject::update(deltaTime);
+}
+
+void Vehicle::SlowInTurnCircle(float deltaTime,float clockwise, Vector2D& direction)
+{
+	float radius = m_maxSpeed / (m_currentAngularVelocity * PI);
+
+	Vector2D directionToCenter = clockwise < 0 ? Vector2D(direction.y, -direction.x) : Vector2D(-direction.y, direction.x);
+	Vector2D center = (directionToCenter * radius) + m_currentPosition;
+
+	m_turnCircle.radius = radius;
+	m_turnCircle.center = center;
+
+	float distSqr = m_positionTo.DistanceSq(m_turnCircle.center);
+	if (distSqr < (radius * radius))
+	{
+		float distanceTocenter = sqrt(distSqr);
+		float alpha = 1.0f - (distanceTocenter / radius);
+		setCurrentSpeed(alpha);
+	}
+	else
+	{
+		setCurrentSpeed(1);
+		//Accelerate(deltaTime);
+	}
+	
 }
 
 // a ratio: a value between 0 and 1 (1 being max speed)
@@ -54,7 +74,8 @@ void Vehicle::setCurrentSpeed(const float speed)
 {
 	m_currentSpeed = m_maxSpeed * speed;
 	m_currentSpeed = max(0, m_currentSpeed);
-	m_currentSpeed = min(1, m_currentSpeed);
+	m_currentSpeed = min(m_maxSpeed, m_currentSpeed);
+	m_currentSpeedAlpha = speed;
 }
 
 // a position to move to
@@ -72,3 +93,14 @@ void Vehicle::setVehiclePosition(Vector2D position)
 	m_startPosition = position;
 	setPosition(XMFLOAT3((float)position.x, (float)position.y, 0));
 }
+
+void Vehicle::Accelerate(float deltaTime)
+{
+	setCurrentSpeed(m_currentSpeedAlpha + deltaTime * 20.0f);
+}
+
+void Vehicle::Break(float deltaTime)
+{
+	setCurrentSpeed(m_currentSpeedAlpha - deltaTime * 20.0f);
+}
+

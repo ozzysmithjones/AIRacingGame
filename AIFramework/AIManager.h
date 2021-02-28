@@ -14,12 +14,15 @@ class PickupItem;
 class Waypoint;
 
 typedef vector<DrawableGameObject*> vecDrawables;
+typedef vector<Vehicle*> vecVehicles;
 typedef vector<Waypoint*> vecWaypoints;
 typedef vector<PickupItem*> vecPickups;
 
 class AIManager
 {
 public:
+
+	void Release();
 
 	HRESULT initialise(ID3D11Device* pd3dDevice);
 	void	update(const float fDeltaTime);
@@ -30,9 +33,10 @@ protected:
 	bool	checkForCollisions();
 
 private:
+
 	vecWaypoints            m_waypoints;
 	vecPickups              m_pickups;
-	Vehicle*				m_pCar = nullptr;
+	vecVehicles				m_cars;
 
 };
 

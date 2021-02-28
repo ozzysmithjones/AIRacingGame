@@ -6,6 +6,15 @@
 
 #include "main.h"
 
+void AIManager::Release()
+{
+    for (auto p : m_cars)
+        delete p;
+    for (auto p : m_waypoints)
+        delete p;
+    for (auto p : m_pickups)
+        delete p;
+}
 
 HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 {
@@ -17,16 +26,27 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 
 
     // create the vehicle ------------------------------------------------
+
     float xPos = 0;
     float yPos = 0;
 
-    m_pCar = new Vehicle();
-    hr = m_pCar->initMesh(pd3dDevice);
-    m_pCar->setPosition(XMFLOAT3(xPos, yPos, 0));
-    if (FAILED(hr))
-        return hr;
+    int numCars = 3;
 
-    // create the waypoints
+    for (unsigned int i = 0; i < numCars; i++) 
+    {
+        Vehicle* car = new Vehicle();
+        hr = car->initMesh(pd3dDevice);
+        car->setPosition(XMFLOAT3(xPos + i, yPos, 0));
+        if (FAILED(hr))
+            return hr;
+
+        m_cars.push_back(car);
+
+    }
+
+    // create the waypoints ----------------------------------------------
+
+    
     float xGap = SCREEN_WIDTH / WAYPOINT_RESOLUTION;
     float yGap = SCREEN_HEIGHT / WAYPOINT_RESOLUTION;
     float xStart = -(SCREEN_WIDTH / 2) + (xGap / 2);
@@ -41,6 +61,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
             m_waypoints.push_back(wp);
         }
     }
+    
 
     return hr;
 }
@@ -49,7 +70,7 @@ void AIManager::update(const float fDeltaTime)
 {
     for (unsigned int i = 0; i < m_waypoints.size(); i++) {
         m_waypoints[i]->update(fDeltaTime);
-        AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
+        //AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
     }
 
     for (unsigned int i = 0; i < m_pickups.size(); i++) {
@@ -57,16 +78,26 @@ void AIManager::update(const float fDeltaTime)
         AddItemToDrawList(m_pickups[i]);
     }
 
-    m_pCar->update(fDeltaTime);
+    for (unsigned int i = 0; i < m_cars.size(); i++) 
+    {
+        m_cars[i]->update(fDeltaTime);
+        AddItemToDrawList(m_cars[i]);
+    }
+    
+    //Test draw turn circle.
+    Vector2D c = m_cars[0]->GetTurnCircle().center;
+    XMFLOAT3 circleCenter = XMFLOAT3(c.x, c.y, 0);
+    m_waypoints[0]->setPosition(circleCenter);
+    AddItemToDrawList(m_waypoints[0]);
+    
 
     checkForCollisions();
-
-    AddItemToDrawList(m_pCar);
 }
 
 void AIManager::mouseUp(int x, int y)
 {
-    m_pCar->setPositionTo(Vector2D(x, y));
+    int carMoved = rand() % m_cars.size();
+    m_cars[carMoved]->setPositionTo(Vector2D(x, y));
 }
 
 void AIManager::keyPress(WPARAM param)
@@ -113,7 +144,7 @@ bool AIManager::checkForCollisions()
         &carScale,
         &dummy,
         &carPos,
-        XMLoadFloat4x4(m_pCar->getTransform())
+        XMLoadFloat4x4(m_cars[0]->getTransform())
     );
 
     XMFLOAT3 scale;
