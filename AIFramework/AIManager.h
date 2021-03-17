@@ -12,6 +12,7 @@ class Vehicle;
 class DrawableGameObject;
 class PickupItem;
 class Waypoint;
+class GridAStar;
 
 typedef vector<DrawableGameObject*> vecDrawables;
 typedef vector<Vehicle*> vecVehicles;
@@ -34,6 +35,7 @@ protected:
 
 private:
 
+	GridAStar*				m_AStar;
 	vecWaypoints            m_waypoints;
 	vecPickups              m_pickups;
 	vecVehicles				m_cars;

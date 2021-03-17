@@ -3,6 +3,7 @@
 #include "DrawableGameObject.h"
 #include "PickupItem.h"
 #include "Waypoint.h"
+#include "AStar.h"
 
 #include "main.h"
 
@@ -14,10 +15,13 @@ void AIManager::Release()
         delete p;
     for (auto p : m_pickups)
         delete p;
+    delete m_AStar;
 }
 
 HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 {
+
+
     // create a pickup item ----------------------------------------------
 
     PickupItem* pPickup = new PickupItem();
@@ -61,7 +65,32 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
             m_waypoints.push_back(wp);
         }
     }
-    
+
+    // create A star Grid ------------------------------------------------
+
+
+    int weights[COLLUMS * ROWS];
+    bool walls[COLLUMS * ROWS];
+    for (unsigned int i = 0; i < m_waypoints.size(); i++) 
+    {
+        weights[i] = m_waypoints[i]->isOnTrack() ? 0 : 1000;
+        walls[i] = false;
+    }
+    m_AStar = new GridAStar();
+    m_AStar->Init(weights,xGap,yGap,xStart,yStart);
+
+    //make a path for car 0
+
+    std::vector<int> path = m_AStar->PathFind(Point(0, 0), Point(19, 19));
+    std::vector<Vector2D> pathPoints;
+
+    for (int p : path)
+    {
+        XMFLOAT3* pos = m_waypoints[p]->getPosition();
+        pathPoints.push_back(Vector2D(pos->x, pos->y));
+    }
+
+    m_cars[0]->SetPath(pathPoints);
 
     return hr;
 }
@@ -70,7 +99,7 @@ void AIManager::update(const float fDeltaTime)
 {
     for (unsigned int i = 0; i < m_waypoints.size(); i++) {
         m_waypoints[i]->update(fDeltaTime);
-        //AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
+        AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
     }
 
     for (unsigned int i = 0; i < m_pickups.size(); i++) {
@@ -84,11 +113,13 @@ void AIManager::update(const float fDeltaTime)
         AddItemToDrawList(m_cars[i]);
     }
     
+    /*
     //Test draw turn circle.
     Vector2D c = m_cars[0]->GetTurnCircle().center;
     XMFLOAT3 circleCenter = XMFLOAT3(c.x, c.y, 0);
     m_waypoints[0]->setPosition(circleCenter);
     AddItemToDrawList(m_waypoints[0]);
+    */
     
 
     checkForCollisions();

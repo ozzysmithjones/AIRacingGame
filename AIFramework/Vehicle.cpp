@@ -11,7 +11,7 @@ HRESULT	Vehicle::initMesh(ID3D11Device* pd3dDevice)
 	m_maxSpeed = 200;
 	m_currentSpeed = m_maxSpeed;
 	m_currentSpeedAlpha = 1;
-	m_currentAngularVelocity = 1.0f;
+	m_currentAngularVelocity = 4.0f;
 	setVehiclePosition(Vector2D(0, 0));
 
 	m_lastPosition = Vector2D(0, 0);
@@ -21,9 +21,11 @@ HRESULT	Vehicle::initMesh(ID3D11Device* pd3dDevice)
 
 void Vehicle::update(const float deltaTime)
 {
+
 	Vector2D diff = m_positionTo - m_currentPosition;
 	if (diff.LengthSq() > 9.0f)
 	{
+		m_arrived = false;
 		m_targetRotation = atan2f(diff.y, diff.x);
 		float angleStep = deltaTime * PI * m_currentAngularVelocity;
 		float clockwise = getClockwise(m_radianRotation, m_targetRotation);
@@ -33,9 +35,20 @@ void Vehicle::update(const float deltaTime)
 		Vector2D direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
 
 		//work out turning circle, and slow down if the target position is in it.
-		SlowInTurnCircle(deltaTime,clockwise, direction);
+		//SlowInTurnCircle(deltaTime,clockwise, direction);
 
 		m_currentPosition += direction * deltaTime * m_currentSpeed;
+	}
+	else 
+	{
+		if (m_isPath && !m_arrived) 
+		{
+			m_arrived = true;
+			m_pathIndex++;
+			if (m_pathIndex >= m_path.size())
+				m_pathIndex = 0;
+			m_positionTo = m_path[m_pathIndex];
+		}
 	}
 
 	// set the current position for the drawable gameobject
@@ -102,5 +115,13 @@ void Vehicle::Accelerate(float deltaTime)
 void Vehicle::Break(float deltaTime)
 {
 	setCurrentSpeed(m_currentSpeedAlpha - deltaTime * 20.0f);
+}
+
+void Vehicle::SetPath(std::vector<Vector2D>& path)
+{
+	m_isPath = true;
+	m_path = path;
+	m_pathIndex = 0;
+	m_positionTo = path[0];
 }
 

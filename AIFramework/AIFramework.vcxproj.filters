@@ -13,6 +13,12 @@
     <ClCompile Include="Background.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="AStar.cpp">
+      <Filter>Pathfinding</Filter>
+    </ClCompile>
+    <ClCompile Include="PriorityQueue.cpp">
+      <Filter>Pathfinding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIManager.h" />
@@ -32,6 +38,12 @@
     <CLInclude Include="resource.h">
       <Filter>Core</Filter>
     </CLInclude>
+    <ClInclude Include="AStar.h">
+      <Filter>Pathfinding</Filter>
+    </ClInclude>
+    <ClInclude Include="PriorityQueue.h">
+      <Filter>Pathfinding</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\blue.dds">
@@ -68,6 +80,9 @@
     </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{c721d74b-61d3-4ae0-9d17-be739d070a1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pathfinding">
+      <UniqueIdentifier>{4c182204-c193-4cfd-8b8d-36c009cfee93}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

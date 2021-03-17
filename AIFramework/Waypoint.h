@@ -11,6 +11,7 @@ public:
     bool isVisible() {return m_visible;}
 
 private:
+
     bool m_isOnTrack;
     bool m_isCheckpoint;
     bool m_visible;

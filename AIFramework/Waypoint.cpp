@@ -22,17 +22,21 @@ HRESULT	Waypoint::initMesh(ID3D11Device* pd3dDevice, const int index)
 	m_isCheckpoint = false;
 	m_isOnTrack = false;
 
-	if (std::find(vecOffTrack400.begin(), vecOffTrack400.end(), index) == vecOffTrack400.end()) {
+	if (std::find(vecOffTrack400.begin(), vecOffTrack400.end(), index) == vecOffTrack400.end()) 
+	{
 		m_isOnTrack = true;
-		if (std::find(vecCheckpoint.begin(), vecCheckpoint.end(), index) != vecCheckpoint.end()) {
+		if (std::find(vecCheckpoint.begin(), vecCheckpoint.end(), index) != vecCheckpoint.end()) 
+		{
 			setTextureName(L"Resources\\yellow.dds");
 			m_isCheckpoint = true;
 		}
-		else {
+		else 
+		{
 			setTextureName(L"Resources\\red.dds");
 		}
 	}
-	else {
+	else 
+	{
 		m_isOnTrack = false;
 		float s = 10;
 		m_scale = XMFLOAT3(s, s, s);
