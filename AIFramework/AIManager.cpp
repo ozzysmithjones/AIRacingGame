@@ -70,28 +70,32 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 
 
     int weights[COLLUMS * ROWS];
-    bool walls[COLLUMS * ROWS];
     for (unsigned int i = 0; i < m_waypoints.size(); i++) 
     {
-        weights[i] = m_waypoints[i]->isOnTrack() ? 0 : 1000;
-        walls[i] = false;
+        weights[i] = m_waypoints[i]->isOnTrack() ? 1 : 10;
     }
     m_AStar = new GridAStar();
     m_AStar->Init(weights,xGap,yGap,xStart,yStart);
 
     //make a path for car 0
 
-    std::vector<int> path = m_AStar->PathFind(Point(0, 0), Point(19, 19));
+    std::vector<int> pathToEnd = m_AStar->PathFind(Point(0, 0), Point(19, 19));
+    std::vector<int> pathToStart= m_AStar->PathFind(Point(19, 19), Point(0, 0));
     std::vector<Vector2D> pathPoints;
 
-    for (int p : path)
+    for (int p : pathToEnd)
+    {
+        XMFLOAT3* pos = m_waypoints[p]->getPosition();
+        pathPoints.push_back(Vector2D(pos->x, pos->y));
+    }
+
+    for (int p : pathToStart)
     {
         XMFLOAT3* pos = m_waypoints[p]->getPosition();
         pathPoints.push_back(Vector2D(pos->x, pos->y));
     }
 
     m_cars[0]->SetPath(pathPoints);
-
     return hr;
 }
 

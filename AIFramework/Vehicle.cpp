@@ -25,7 +25,7 @@ void Vehicle::update(const float deltaTime)
 	Vector2D diff = m_positionTo - m_currentPosition;
 	if (diff.LengthSq() > 9.0f)
 	{
-		m_arrived = false;
+		//m_arrived = false;
 		m_targetRotation = atan2f(diff.y, diff.x);
 		float angleStep = deltaTime * PI * m_currentAngularVelocity;
 		float clockwise = getClockwise(m_radianRotation, m_targetRotation);
@@ -41,9 +41,8 @@ void Vehicle::update(const float deltaTime)
 	}
 	else 
 	{
-		if (m_isPath && !m_arrived) 
+		if (m_isPath) 
 		{
-			m_arrived = true;
 			m_pathIndex++;
 			if (m_pathIndex >= m_path.size())
 				m_pathIndex = 0;
@@ -55,6 +54,58 @@ void Vehicle::update(const float deltaTime)
 	setPosition(XMFLOAT3((float)m_currentPosition.x, (float)m_currentPosition.y, 0));
 
 	DrawableGameObject::update(deltaTime);
+}
+
+float Vehicle::getDegrees(float radians)
+{
+	return (radians / PI) * 180.0f;
+}
+
+float Vehicle::getRadians(float degrees)
+{
+	return (degrees / 180.0f) * PI;
+}
+
+float Vehicle::addRadian(float a, float b)
+{
+	float result = a + b;
+
+	while (result < 0.0f)
+	{
+		result += 2.0f * PI;
+	}
+	while (result > 2.0f * PI)
+	{
+		result -= 2.0f * PI;
+	}
+
+	return result;
+}
+
+float Vehicle::getClockwise(float a, float b, float maxProximity)
+{
+	float diff = addRadian(b, -a);
+
+	if (abs(diff) < maxProximity)
+		return 0.0f;
+
+	if (diff >= 0.0f && diff <= PI)
+	{
+		return 1.0f;
+	}
+
+	if (diff < 0.0f && diff >= -PI)
+	{
+		return -1.0f;
+	}
+
+	if (diff < -PI)
+	{
+		return 1.0f;
+	}
+	else {
+		return -1.0f;
+	}
 }
 
 void Vehicle::SlowInTurnCircle(float deltaTime,float clockwise, Vector2D& direction)

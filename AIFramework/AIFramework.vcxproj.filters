@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="AIManager.cpp" />
-    <ClCompile Include="DrawableGameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PickupItem.cpp" />
     <ClCompile Include="Vehicle.cpp" />
@@ -18,6 +17,13 @@
     </ClCompile>
     <ClCompile Include="PriorityQueue.cpp">
       <Filter>Pathfinding</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawableGameObject.cpp" />
+    <ClCompile Include="BehaviourTree.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="FiniteStateMachine.cpp">
+      <Filter>AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +49,12 @@
     </ClInclude>
     <ClInclude Include="PriorityQueue.h">
       <Filter>Pathfinding</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviourTree.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="FiniteStateMachine.h">
+      <Filter>AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +95,9 @@
     </Filter>
     <Filter Include="Pathfinding">
       <UniqueIdentifier>{4c182204-c193-4cfd-8b8d-36c009cfee93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{df5ec9d2-296e-4422-9ed5-f5d343d56b42}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

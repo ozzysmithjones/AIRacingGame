@@ -40,11 +40,6 @@ protected:
 	XMFLOAT3							multiplyFloat3(XMFLOAT3& f1, const float scalar);
 	XMFLOAT3							divideFloat3(XMFLOAT3& f1, const float scalar);
 
-	float getDegrees(float radians);
-	float getRadians(float degrees);
-	float addRadian(float a, float b); //adds two radians and returns the result.(includes wrapping)
-	float getClockwise(float a, float b, float maxProximity = 0.01f); //get's the shortest path between two angles.(1 = clockwise, -1 = anti-clockwise)
-
 protected: // protected variables
 	XMFLOAT3							m_scale;
 	float								m_radianRotation;

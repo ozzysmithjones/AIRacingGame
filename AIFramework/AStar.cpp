@@ -1,12 +1,61 @@
 #include "AStar.h"
 
+void GridAStar::GetOrthogonalNeighbours(Point point, Point neighbours[])
+{
+	for (int i = 0; i < 4; i++)
+	{
+		int xOffset;
+		int yOffset;
+
+		//using binary operations to for assignment of neighbouring position.
+		if ((i & 1) == 0)
+		{
+			yOffset = 0;
+			if ((i & 2) == 0)
+			{
+				xOffset = 1;
+			}
+			else
+			{
+				xOffset = -1;
+			}
+		}
+		else
+		{
+			xOffset = 0;
+			if ((i & 2) == 0)
+			{
+				yOffset = 1;
+			}
+			else
+			{
+				yOffset = -1;
+			}
+		}
+
+		neighbours[i] = Point(point.x + xOffset, point.y + yOffset);
+	}
+}
+
+void GridAStar::GetDiagonalNeighbours(Point point, Point neighbours[])
+{
+	for (int i = 0; i < 4; i++)
+	{
+		//using binary operations to speed up assignment of neighbouring position.
+		int xOffset = (i & 1) == 0 ? 1 : -1;
+		int yOffset = (i & 2) == 0 ? 1 : -1;
+
+		neighbours[i] = Point(point.x + xOffset, point.y + yOffset);
+	}
+}
+
 int GridAStar::Heuristic(int start, int goal)
 {
 	Point startPoint = ToPoint(start);
 	Point goalPoint = ToPoint(goal);
 	Point diff = Point(goalPoint.x - startPoint.x, goalPoint.y - startPoint.y);
 
-	return sqrt(diff.x * diff.x + diff.y * diff.y);
+	return sqrt(diff.x * diff.x + diff.y * diff.y) * 10;
 }
 
 void GridAStar::Init(int gridWeights[COLLUMS * ROWS], float xGap, float yGap, float xStart, float yStart)
@@ -22,131 +71,130 @@ void GridAStar::Init(int gridWeights[COLLUMS * ROWS], float xGap, float yGap, fl
 	}
 }
 
-std::vector<int> GridAStar::PathFind(Point start, Point goal)
+std::vector<int> GridAStar::PathFind(Point start, Point end)
 {
+	//set up frontier and closed collections.
 	auto compare = [this](AStarNode a, AStarNode b) { return a.distance > b.distance; };
-	std::priority_queue<AStarNode, std::vector<AStarNode>, decltype(compare)> frontier(compare);
-	std::unordered_map<int, AStarNode> closed;
+	std::priority_queue<AStarNode, std::vector<AStarNode>, decltype(compare)> priorityQueue(compare);
+	std::unordered_map<int,AStarNode> frontier;
+	std::unordered_map<int,AStarNode> closed;
 
+	//convert start and end positions to indecies in the grid.
 	int startIndex = ToIndex(start.x, start.y);
-	int goalIndex = ToIndex(goal.x, goal.y);
+	int endIndex = ToIndex(end.x, end.y);
 
+	//Create the start node.
 	AStarNode currentNode;
-	currentNode.position = goalIndex;
+	currentNode.position = endIndex;
 	currentNode.breadcrumb = -1;
 	currentNode.distanceToStart = 0;
-	currentNode.distance = Heuristic(goalIndex, startIndex);
+	currentNode.distance = Heuristic(endIndex, startIndex);
 
-	frontier.push(currentNode);
-	closed[currentNode.position] = currentNode;
+	priorityQueue.push(currentNode);
 
-	//Frontier expansion.
-	while (!frontier.empty() && currentNode.position != startIndex) 
+	while (!priorityQueue.empty() && currentNode.position != startIndex)
 	{
-		currentNode = frontier.top();
-		frontier.pop();
+		currentNode = priorityQueue.top();
+		priorityQueue.pop();
 
-		Point point = ToPoint(currentNode.position);
+		closed[currentNode.position] = currentNode;
 
-		//iterate through each orthogonal neighbour and add them to frontier.
-		for (int i = 0; i < 4; i++) 
-		{
-			int xOffset;
-			int yOffset;
+		Point orthogonal[4];
+		Point diagonal[4];
 
-			//using binary operations to speed up assignment of neighbouring position.
-			if ((i & 1) == 0) 
-			{
-				yOffset = 0;
-				if ((i & 2) == 0) 
-				{
-					xOffset = 1;
-				}
-				else 
-				{
-					xOffset = -1;
-				}
-			}
-			else 
-			{
-				xOffset = 0;
-				if ((i & 2) == 0)
-				{
-					yOffset = 1;
-				}
-				else 
-				{
-					yOffset = -1;
-				}
-			}
+		GetOrthogonalNeighbours(ToPoint(currentNode.position), orthogonal);
+		GetDiagonalNeighbours(ToPoint(currentNode.position),diagonal);
 
-			if (InBounds(point.x + xOffset, point.y + yOffset))
-			{
-				int index = ToIndex(point.x + xOffset, point.y + yOffset);
-				if (grid[index] < 0)
-					continue;
-
-				if (closed.find(index) != closed.end())
-					continue;
-
-				int distanceToStart = currentNode.distanceToStart + 10;
-				int distance = distanceToStart + Heuristic(index, startIndex) + grid[index];
-
-				//Create new node at this position:
-				
-				AStarNode node;
-				node.breadcrumb = currentNode.position;
-				node.position = index;
-				node.distanceToStart = distanceToStart;
-				node.distance = distance;
-				frontier.push(node);
-
-				//Add node to visited list.
-				closed[node.position] = node;
-			}
-		}
-
-		//iterate through each diagonal neighbour and add them to frontier.
 		for (int i = 0; i < 4; i++)
 		{
-			//using binary operations to speed up assignment of neighbouring position.
-			int xOffset = (i & 1) == 0 ? 1 : -1;
-			int yOffset = (i & 2) == 0 ? 1 : -1;
+			Point& orthoNeighbour = orthogonal[i];
 
-			if (InBounds(point.x + xOffset, point.y + yOffset)) 
+			if (InBounds(orthoNeighbour.x, orthoNeighbour.y))
 			{
-				int index = ToIndex(point.x + xOffset, point.y + yOffset);
+				int index = ToIndex(orthoNeighbour.x, orthoNeighbour.y);
+
 				if (grid[index] < 0)
+				{
 					continue;
+				}
 
 				if (closed.find(index) != closed.end())
+				{
 					continue;
+				}
 
-				int distanceToStart = currentNode.distanceToStart + 10;
-				int distance = distanceToStart + Heuristic(index, startIndex) + grid[index];
+				int distanceToStart = currentNode.distanceToStart + 10 * grid[index];
+				int distance = distanceToStart + Heuristic(index, startIndex);
+
+				if (frontier.find(index) != frontier.end())
+				{
+					if (frontier[index].distanceToStart <= distanceToStart)
+					{
+						continue;
+					}
+				}
 
 				AStarNode node;
 				node.breadcrumb = currentNode.position;
 				node.position = index;
 				node.distanceToStart = distanceToStart;
 				node.distance = distance;
-				frontier.push(node);
 
-				//Add node to visited list.
-				closed[node.position] = node;
+				priorityQueue.push(node);
+				frontier[node.position] = node;
 			}
 		}
 
-		
+		for (int i = 0; i < 4; i++)
+		{
+			Point& diagNeighbour = diagonal[i];
+
+			if (InBounds(diagNeighbour.x, diagNeighbour.y))
+			{
+				int index = ToIndex(diagNeighbour.x, diagNeighbour.y);
+
+				if (grid[index] < 0)
+				{
+					continue;
+				}
+
+				if (closed.find(index) != closed.end())
+				{
+					continue;
+				}
+
+				int distanceToStart = currentNode.distanceToStart + 14 * grid[index];
+				int distance = distanceToStart + Heuristic(index, startIndex);
+
+				if (frontier.find(index) != frontier.end())
+				{
+					if (frontier[index].distanceToStart <= distanceToStart) 
+					{
+						continue;
+					}
+				}
+
+				AStarNode node;
+				node.breadcrumb = currentNode.position;
+				node.position = index;
+				node.distanceToStart = distanceToStart;
+				node.distance = distance;
+
+				priorityQueue.push(node);
+				frontier[node.position] = node;
+			}
+		}
+
+		Point point = ToPoint(currentNode.position);
 	}
 
-	if (currentNode.position == goalIndex)
+	if (currentNode.position == endIndex)
 		return std::vector<int>();
 
 	//Reading path backwards
 	std::vector<int> path;
 	path.push_back(currentNode.position);
-	while(currentNode.position != goalIndex && currentNode.position >= 0)
+	while (currentNode.position != endIndex && currentNode.position >= 0)
 	{
 		currentNode = closed[currentNode.breadcrumb];
 		path.push_back(currentNode.position);
@@ -154,3 +202,4 @@ std::vector<int> GridAStar::PathFind(Point start, Point goal)
 
 	return path;
 }
+

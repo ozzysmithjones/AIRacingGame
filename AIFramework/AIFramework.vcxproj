@@ -362,6 +362,7 @@
     <ClCompile Include="AIManager.cpp" />
     <ClCompile Include="AStar.cpp" />
     <ClCompile Include="Background.cpp" />
+    <ClCompile Include="BehaviourTree.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DrawableGameObject.cpp" />
     <ClCompile Include="main.cpp">
@@ -369,6 +370,7 @@
     </ClCompile>
     <ClCompile Include="PickupItem.cpp" />
     <ClCompile Include="PriorityQueue.cpp" />
+    <ClCompile Include="FiniteStateMachine.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="Waypoint.cpp" />
   </ItemGroup>
@@ -376,6 +378,7 @@
     <ClInclude Include="AIManager.h" />
     <ClInclude Include="AStar.h" />
     <ClInclude Include="Background.h" />
+    <ClInclude Include="BehaviourTree.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="DrawableGameObject.h" />
     <ClInclude Include="main.h">
@@ -384,6 +387,7 @@
     <ClInclude Include="PickupItem.h" />
     <ClInclude Include="PriorityQueue.h" />
     <CLInclude Include="resource.h" />
+    <ClInclude Include="FiniteStateMachine.h" />
     <ClInclude Include="structures.h" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="Vehicle.h" />

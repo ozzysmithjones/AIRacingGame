@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <limits>
+#include <unordered_set>
 #include <unordered_map>
 #include <queue>
 #include "Vector2D.h"
@@ -17,6 +18,12 @@ struct Point
 	{
 		x = _x;
 		y = _y;
+	}
+
+	Point()
+	{
+		x = 0;
+		y = 0;
 	}
 };
 
@@ -36,6 +43,10 @@ private:
 	float m_yGapping = 1.0f;
 	float m_xStart = 1.0f;
 	float m_yStart = 1.0f;
+
+
+	void GetOrthogonalNeighbours(Point point, Point neighbours[]);
+	void GetDiagonalNeighbours(Point point, Point neighbours[]);
 
 	int grid[COLLUMS * ROWS]; // -1 means wall. Otherwise it's a weight value.
 	int Heuristic(int start, int goal);

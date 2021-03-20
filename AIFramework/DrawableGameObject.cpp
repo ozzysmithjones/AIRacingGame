@@ -202,58 +202,6 @@ XMFLOAT3 DrawableGameObject::divideFloat3(XMFLOAT3& f1, const float scalar)
 	return out;
 }
 
-float DrawableGameObject::getDegrees(float radians)
-{
-	return (radians / PI) * 180.0f;
-}
-
-float DrawableGameObject::getRadians(float degrees)
-{
-	return (degrees / 180.0f) * PI;
-}
-
-float DrawableGameObject::addRadian(float a, float b)
-{
-	float result = a + b;
-
-	while (result < 0.0f) 
-	{
-		result += 2.0f * PI;
-	}
-	while (result > 2.0f * PI) 
-	{
-		result -= 2.0f * PI;
-	}
-
-	return result;
-}
-
-float DrawableGameObject::getClockwise(float a, float b, float maxProximity)
-{
-	float diff = addRadian(b, -a);
-
-	if (abs(diff) < maxProximity)
-		return 0.0f;
-
-	if (diff >= 0.0f && diff <= PI) 
-	{
-		return 1.0f;
-	}
-
-	if (diff < 0.0f && diff >= -PI) 
-	{
-		return -1.0f;
-	}
-
-	if (diff < -PI) 
-	{
-		return 1.0f;
-	}
-	else {
-		return -1.0f;
-	}
-}
-
 
 
 float DrawableGameObject::magnitudeFloat3(XMFLOAT3& f1)

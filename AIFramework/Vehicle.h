@@ -30,6 +30,11 @@ public:
 
 protected:
 
+	float getDegrees(float radians);
+	float getRadians(float degrees);
+	float addRadian(float a, float b); //adds two radians and returns the result.(includes wrapping)
+	float getClockwise(float a, float b, float maxProximity = 0.01f); //get's the shortest path between two angles.(1 = clockwise, -1 = anti-clockwise)
+
 	float m_currentSpeedAlpha;
 	float m_targetRotation;
 	float m_maxSpeed;
