@@ -13,26 +13,28 @@ void BehaviourTree::Reset()
 
 void BehaviourTree::Update(const float deltaTime)
 {
-	Behaviour* child;
+	Behaviour* childToPush;
+
 	do 
 	{
-		child = nullptr;
-		BehaviourState behaviourState = m_behaviourStack.top()->Update(deltaTime, child);
+		childToPush = nullptr;
+		BehaviourState behaviourState = m_behaviourStack.top()->Update(deltaTime, childToPush);
 
-		if (child != nullptr)
+		if (childToPush != nullptr)
 		{
-			m_behaviourStack.push(child);
+			m_behaviourStack.push(childToPush);
 		}
 		else 
 		{
 			while (behaviourState != BehaviourState::RUNNING && m_behaviourStack.size() > 1)
 			{
+				Behaviour* childToRemove = m_behaviourStack.top();
 				m_behaviourStack.pop();
-				behaviourState = m_behaviourStack.top()->Resume(behaviourState);
+				behaviourState = m_behaviourStack.top()->Resume(childToRemove,behaviourState);
 			}
 		}
 
-	} while (child != nullptr);
+	} while (childToPush != nullptr);
 }
 
 BehaviourTree::BehaviourTree(Behaviour* root)
@@ -47,7 +49,7 @@ BehaviourTree::~BehaviourTree()
 	m_root = nullptr;
 }
 
-BehaviourState SequencerBehaviour::Resume(BehaviourState childBehaviourState)
+BehaviourState SequencerBehaviour::Resume(Behaviour* child, BehaviourState childBehaviourState)
 {
 	if(childBehaviourState == BehaviourState::FAIL)
 	{
@@ -100,7 +102,7 @@ void SelectorBehaviour::Reset()
 }
 
 
-BehaviourState SelectorBehaviour::Resume(BehaviourState childBehaviourState)
+BehaviourState SelectorBehaviour::Resume(Behaviour* child,BehaviourState childBehaviourState)
 {
 	if (childBehaviourState == BehaviourState::FAIL)
 	{
@@ -157,7 +159,7 @@ void InverterBehaviour::Reset()
 {
 }
 
-BehaviourState InverterBehaviour::Resume(BehaviourState childBehaviourState)
+BehaviourState InverterBehaviour::Resume(Behaviour* child, BehaviourState childBehaviourState)
 {
 	switch (childBehaviourState)
 	{

@@ -22,19 +22,15 @@ void FiniteStateMachine::Update(const float deltaTime)
 
 FiniteStateMachine::FiniteStateMachine()
 {
-	for (int i = 0; i < MAX_STATES; i++)
-	{
-		m_states[i] = nullptr;
-	}
+
 }
 
 FiniteStateMachine::~FiniteStateMachine()
 {
-	for (int i = 0; i < MAX_STATES; i++)
+	for (auto pair : m_states)
 	{
-		if (m_states[i] != nullptr)
-		{
-			delete m_states[i];
-		}
+		delete pair.second;
 	}
+
+	m_states.clear();
 }

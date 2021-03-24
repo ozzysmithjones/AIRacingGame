@@ -16,7 +16,7 @@ class Behaviour
 public:
 
 	virtual void Reset() = 0;
-	virtual BehaviourState Resume(BehaviourState childBehaviourState) = 0;
+	virtual BehaviourState Resume(Behaviour* child,BehaviourState childBehaviourState) = 0;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) = 0;
 };
 
@@ -28,7 +28,7 @@ private:
 	std::vector<Behaviour*> m_children;
 
 	virtual void Reset() override;
-	virtual BehaviourState Resume(BehaviourState childBehaviourState) override;
+	virtual BehaviourState Resume(Behaviour* child,BehaviourState childBehaviourState) override;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 
 public:
@@ -46,7 +46,7 @@ private:
 
 	// Inherited via Behaviour
 	virtual void Reset() override;
-	virtual BehaviourState Resume(BehaviourState childBehaviourState) override;
+	virtual BehaviourState Resume(Behaviour* child,BehaviourState childBehaviourState) override;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 
 public:
@@ -63,7 +63,7 @@ private:
 
 	// Inherited via Behaviour
 	virtual void Reset() override;
-	virtual BehaviourState Resume(BehaviourState childBehaviourState) override;
+	virtual BehaviourState Resume(Behaviour* child,BehaviourState childBehaviourState) override;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 public:
 

@@ -1,20 +1,10 @@
 #pragma once
 #include <stdexcept>
-#include <array>
-#define MAX_STATES 16
-
-class FiniteStateMachine;
+#include <unordered_map>
 
 class State
 {
-
-protected:
-
-	FiniteStateMachine* m_stateMachine;
-
 public:
-
-	void SetStateMachine(FiniteStateMachine* stateMachine) { m_stateMachine = stateMachine; };
 	virtual void Initialise() = 0;
 	virtual void Enter() = 0;
 	virtual void Update(const float deltaTime) = 0;
@@ -30,7 +20,7 @@ private:
 
 	int	   m_currentStateID = -1;
 	State* m_currentState = nullptr;
-	State* m_states[MAX_STATES];
+	std::unordered_map<int, State*> m_states;
 
 protected:
 
@@ -57,17 +47,13 @@ protected:
 	void AddState(T* state, bool isDefaultState = false)
 	{
 		int id = TypeID::GetID<T>();
-		if (m_states[id] == nullptr)
-		{
-			m_states[id] = state;
-			m_states[id]->SetStateMachine(this);
-			m_states[id]->Initialise();
+		m_states[id] = state;
+		m_states[id]->Initialise();
 
-			if (isDefaultState && m_currentState == nullptr)
-			{
-				m_currentState = state;
-				m_currentStateID = id;
-			}
+		if (isDefaultState && m_currentState == nullptr)
+		{
+			m_currentState = state;
+			m_currentStateID = id;
 		}
 	}
 
@@ -76,7 +62,7 @@ protected:
 	{
 		int id = TypeID::GetID<T>();
 
-		if (m_states[id] == nullptr)
+		if (m_states.find(id) == m_states.end())
 		{
 			throw std::exception("There is a missing state in the state machine");
 			return;

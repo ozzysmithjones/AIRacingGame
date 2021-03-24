@@ -25,20 +25,20 @@ public:
 	ID3D11SamplerState**				getTextureSamplerState() { return &m_pSamplerLinear; }
 
 	void								setPosition(XMFLOAT3 position);
-	XMFLOAT3*							getPosition() { return &m_position; }
-	XMFLOAT3*							getDirection() { return &m_direction; }
+	DirectX::XMFLOAT3*					getPosition() { return &m_position; }
+	DirectX::XMFLOAT3*					getDirection() { return &m_direction; }
 
 protected:
 	void								setDirection(XMFLOAT3 direction); 
 	void								setTextureName(wstring texName) { m_textureName = texName; }
 
 	// helper functions
-	XMFLOAT3							addFloat3(XMFLOAT3& f1, XMFLOAT3& f2);
-	XMFLOAT3							subtractFloat3(XMFLOAT3& f1, XMFLOAT3& f2);
-	XMFLOAT3							normaliseFloat3(XMFLOAT3& f1);
+	DirectX::XMFLOAT3					addFloat3(XMFLOAT3& f1, XMFLOAT3& f2);
+	DirectX::XMFLOAT3					subtractFloat3(XMFLOAT3& f1, XMFLOAT3& f2);
+	DirectX::XMFLOAT3					normaliseFloat3(XMFLOAT3& f1);
 	float								magnitudeFloat3(XMFLOAT3& f1);
-	XMFLOAT3							multiplyFloat3(XMFLOAT3& f1, const float scalar);
-	XMFLOAT3							divideFloat3(XMFLOAT3& f1, const float scalar);
+	DirectX::XMFLOAT3					multiplyFloat3(XMFLOAT3& f1, const float scalar);
+	DirectX::XMFLOAT3					divideFloat3(XMFLOAT3& f1, const float scalar);
 
 protected: // protected variables
 	XMFLOAT3							m_scale;
@@ -51,7 +51,7 @@ private: // private variables
 	ID3D11Buffer*						m_pIndexBuffer;
 	ID3D11ShaderResourceView*			m_pTextureResourceView;
 	ID3D11SamplerState *				m_pSamplerLinear;
-	XMFLOAT3							m_position;
+	DirectX::XMFLOAT3					m_position;
 
 	XMFLOAT3							m_direction;
 	wstring								m_textureName;
