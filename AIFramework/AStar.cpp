@@ -7,7 +7,7 @@ void GridAStar::GetOrthogonalNeighbours(Point point, Point neighbours[])
 		int xOffset;
 		int yOffset;
 
-		//using binary operations to for assignment of neighbouring position.
+		//using binary operations for assignment of neighbouring position.
 		if ((i & 1) == 0)
 		{
 			yOffset = 0;
@@ -58,13 +58,8 @@ int GridAStar::Heuristic(int start, int goal)
 	return sqrt(diff.x * diff.x + diff.y * diff.y) * 10;
 }
 
-void GridAStar::Init(int gridWeights[COLLUMS * ROWS], float xGap, float yGap, float xStart, float yStart)
+void GridAStar::Init(int gridWeights[COLLUMS * ROWS])
 {
-	m_xStart = xStart;
-	m_yStart = yStart;
-	m_xGapping = xGap;
-	m_yGapping = yGap;
-
 	for (int i = 0; i < COLLUMS * ROWS; i++)
 	{
 		grid[i] = gridWeights[i];
@@ -94,9 +89,11 @@ std::vector<int> GridAStar::PathFind(Point start, Point end, bool includeStart)
 
 	while (!priorityQueue.empty() && currentNode.position != startIndex)
 	{
+		//Always explore from the current best path node in the frontier(the top of the priority queue).
 		currentNode = priorityQueue.top();
 		priorityQueue.pop();
 
+		//add it to closed list.
 		closed[currentNode.position] = currentNode;
 
 		Point orthogonal[4];
@@ -105,93 +102,60 @@ std::vector<int> GridAStar::PathFind(Point start, Point end, bool includeStart)
 		GetOrthogonalNeighbours(ToPoint(currentNode.position), orthogonal);
 		GetDiagonalNeighbours(ToPoint(currentNode.position),diagonal);
 
-		for (int i = 0; i < 4; i++)
+		//Expansion of frontier to neighbouring positions.
+		for (int i = 0; i < 8; i++)
 		{
-			Point& orthoNeighbour = orthogonal[i];
-
-			if (InBounds(orthoNeighbour.x, orthoNeighbour.y))
+			Point& neighbour = i >= 4 ? diagonal[i - 4] : orthogonal[i];
+			
+			if (!InBounds(neighbour.x, neighbour.y))
 			{
-				int index = ToIndex(orthoNeighbour.x, orthoNeighbour.y);
-
-				if (grid[index] < 0)
-				{
-					continue;
-				}
-
-				if (closed.find(index) != closed.end())
-				{
-					continue;
-				}
-
-				int distanceToStart = currentNode.distanceToStart + 10 * grid[index];
-				int distance = distanceToStart + Heuristic(index, startIndex);
-
-				if (frontierDistance.find(index) != frontierDistance.end())
-				{
-					if (frontierDistance[index] <= distanceToStart)
-					{
-						continue;
-					}
-				}
-
-				AStarNode node;
-				node.breadcrumb = currentNode.position;
-				node.position = index;
-				node.distanceToStart = distanceToStart;
-				node.distance = distance;
-
-				priorityQueue.push(node);
-				frontierDistance[node.position] = node.distanceToStart;
+				continue;
 			}
-		}
 
-		for (int i = 0; i < 4; i++)
-		{
-			Point& diagNeighbour = diagonal[i];
+			int index = ToIndex(neighbour.x, neighbour.y);
 
-			if (InBounds(diagNeighbour.x, diagNeighbour.y))
+			//if the node is a wall (negative move cost) then skip. 
+			if (grid[index] < 0)
 			{
-				int index = ToIndex(diagNeighbour.x, diagNeighbour.y);
-
-				if (grid[index] < 0)
-				{
-					continue;
-				}
-
-				if (closed.find(index) != closed.end())
-				{
-					continue;
-				}
-
-				int distanceToStart = currentNode.distanceToStart + 14 * grid[index];
-				int distance = distanceToStart + Heuristic(index, startIndex);
-
-				if (frontierDistance.find(index) != frontierDistance.end())
-				{
-					if (frontierDistance[index] <= distanceToStart) 
-					{
-						continue;
-					}
-				}
-
-				AStarNode node;
-				node.breadcrumb = currentNode.position;
-				node.position = index;
-				node.distanceToStart = distanceToStart;
-				node.distance = distance;
-
-				priorityQueue.push(node);
-				frontierDistance[node.position] = node.distanceToStart;
+				continue;
 			}
-		}
 
-		Point point = ToPoint(currentNode.position);
+			//if we have already visited this node, skip.
+			if (closed.find(index) != closed.end())
+			{
+				continue;
+			}
+
+			//Calculate distance to neighbouring node.
+			int distanceToNeighbour = i >= 4 ? 14 : 10;
+			int distanceToStart = currentNode.distanceToStart + distanceToNeighbour * grid[index];
+			int distance = distanceToStart + Heuristic(index, startIndex);
+
+			//if there is already shorter path to this node in the frontier, skip.
+			if (frontierDistance.find(index) != frontierDistance.end())
+			{
+				if (frontierDistance[index] <= distanceToStart)
+				{
+					continue;
+				}
+			}
+
+			//create a new a star node and add it to the frontier.
+			AStarNode node;
+			node.breadcrumb = currentNode.position;
+			node.position = index;
+			node.distanceToStart = distanceToStart;
+			node.distance = distance;
+
+			priorityQueue.push(node);
+			frontierDistance[node.position] = node.distanceToStart;
+		}
 	}
 
 	if (currentNode.position == endIndex)
 		return std::vector<int>();
 
-	//Reading path backwards
+	//Reading path from start to end
 	std::vector<int> path;
 	if (includeStart)
 	{

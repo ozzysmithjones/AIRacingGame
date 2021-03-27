@@ -89,7 +89,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 
     //Pathfind from checkpoint to checkpoint.
     m_AStar = new GridAStar();
-    m_AStar->Init(weights,xGap,yGap,xStart,yStart);
+    m_AStar->Init(weights);
 
     for (int i = 0; i < m_checkPoints.size(); i++)
     {
