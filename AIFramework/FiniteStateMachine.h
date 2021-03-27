@@ -65,7 +65,6 @@ protected:
 		if (m_states.find(id) == m_states.end())
 		{
 			throw std::exception("There is a missing state in the state machine");
-			return;
 		}
 
 		if (m_currentState != nullptr) 

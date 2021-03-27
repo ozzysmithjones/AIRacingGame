@@ -59,7 +59,8 @@ private:
 public:
 
 	void Init(int gridWeights[COLLUMS * ROWS], float xGap, float yGap, float xStart, float yStart);
-	std::vector<int> PathFind(Point start, Point goal);
+	std::vector<int> PathFind(Point start, Point goal, bool includeStart = true);
+	std::vector<int> PathFind(int startIndex,int goalIndex, bool includeStart = false);
 };
 
 

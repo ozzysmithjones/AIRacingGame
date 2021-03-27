@@ -71,12 +71,12 @@ void GridAStar::Init(int gridWeights[COLLUMS * ROWS], float xGap, float yGap, fl
 	}
 }
 
-std::vector<int> GridAStar::PathFind(Point start, Point end)
+std::vector<int> GridAStar::PathFind(Point start, Point end, bool includeStart)
 {
 	//set up frontier and closed collections.
 	auto compare = [this](AStarNode a, AStarNode b) { return a.distance > b.distance; };
 	std::priority_queue<AStarNode, std::vector<AStarNode>, decltype(compare)> priorityQueue(compare);
-	std::unordered_map<int,AStarNode> frontier;
+	std::unordered_map<int,int> frontierDistance;
 	std::unordered_map<int,AStarNode> closed;
 
 	//convert start and end positions to indecies in the grid.
@@ -126,9 +126,9 @@ std::vector<int> GridAStar::PathFind(Point start, Point end)
 				int distanceToStart = currentNode.distanceToStart + 10 * grid[index];
 				int distance = distanceToStart + Heuristic(index, startIndex);
 
-				if (frontier.find(index) != frontier.end())
+				if (frontierDistance.find(index) != frontierDistance.end())
 				{
-					if (frontier[index].distanceToStart <= distanceToStart)
+					if (frontierDistance[index] <= distanceToStart)
 					{
 						continue;
 					}
@@ -141,7 +141,7 @@ std::vector<int> GridAStar::PathFind(Point start, Point end)
 				node.distance = distance;
 
 				priorityQueue.push(node);
-				frontier[node.position] = node;
+				frontierDistance[node.position] = node.distanceToStart;
 			}
 		}
 
@@ -166,9 +166,9 @@ std::vector<int> GridAStar::PathFind(Point start, Point end)
 				int distanceToStart = currentNode.distanceToStart + 14 * grid[index];
 				int distance = distanceToStart + Heuristic(index, startIndex);
 
-				if (frontier.find(index) != frontier.end())
+				if (frontierDistance.find(index) != frontierDistance.end())
 				{
-					if (frontier[index].distanceToStart <= distanceToStart) 
+					if (frontierDistance[index] <= distanceToStart) 
 					{
 						continue;
 					}
@@ -181,7 +181,7 @@ std::vector<int> GridAStar::PathFind(Point start, Point end)
 				node.distance = distance;
 
 				priorityQueue.push(node);
-				frontier[node.position] = node;
+				frontierDistance[node.position] = node.distanceToStart;
 			}
 		}
 
@@ -193,7 +193,11 @@ std::vector<int> GridAStar::PathFind(Point start, Point end)
 
 	//Reading path backwards
 	std::vector<int> path;
-	path.push_back(currentNode.position);
+	if (includeStart)
+	{
+		path.push_back(currentNode.position);
+	}
+
 	while (currentNode.position != endIndex && currentNode.position >= 0)
 	{
 		currentNode = closed[currentNode.breadcrumb];
@@ -201,5 +205,10 @@ std::vector<int> GridAStar::PathFind(Point start, Point end)
 	}
 
 	return path;
+}
+
+std::vector<int> GridAStar::PathFind(int startIndex, int goalIndex, bool includeStart)
+{
+	return PathFind(ToPoint(startIndex),ToPoint(goalIndex),includeStart);
 }
 

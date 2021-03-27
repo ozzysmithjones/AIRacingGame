@@ -13,11 +13,11 @@ std::vector<int> vecOffTrack400{ 0,1,2,3,23,8,9,10,11,12,13,14,15,16,17,18,19,39
 	389,369,388,387,367,386,385,40,7,96,92,90,298,337,316,334,354,315,352,350,368,360,381,
 	340,181,161,141,5,6,38,99,34,305,306,270,232, 139,82,102,63,43,24,4,119,220,223,223,218 };
 
-std::vector<int> vecCheckpoint{ 311,239,159,58,54,93,176,209,264,87,47,44,162,240,362};
-
+std::vector<int> vecCheckpoint = { 311,239,159,58,54,93,176,209,264,87,47,44,162,240,362 };
 
 HRESULT	Waypoint::initMesh(ID3D11Device* pd3dDevice, const int index)
 {
+
 	m_visible = true;
 	m_isCheckpoint = false;
 	m_isOnTrack = false;
@@ -25,14 +25,16 @@ HRESULT	Waypoint::initMesh(ID3D11Device* pd3dDevice, const int index)
 	if (std::find(vecOffTrack400.begin(), vecOffTrack400.end(), index) == vecOffTrack400.end()) 
 	{
 		m_isOnTrack = true;
-		if (std::find(vecCheckpoint.begin(), vecCheckpoint.end(), index) != vecCheckpoint.end()) 
+		int indexOfCheckPoint = std::find(vecCheckpoint.begin(), vecCheckpoint.end(), index) - vecCheckpoint.begin();
+		if (indexOfCheckPoint < vecCheckpoint.size()) 
 		{
-			setTextureName(L"Resources\\yellow.dds");
+			m_checkpointIndex = indexOfCheckPoint;
+			setTextureName(L"Resources\\red.dds");
 			m_isCheckpoint = true;
 		}
 		else 
 		{
-			setTextureName(L"Resources\\red.dds");
+			setTextureName(L"Resources\\yellow.dds");
 		}
 	}
 	else 

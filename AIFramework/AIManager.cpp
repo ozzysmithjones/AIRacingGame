@@ -21,7 +21,6 @@ void AIManager::Release()
 HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 {
 
-
     // create a pickup item ----------------------------------------------
 
     PickupItem* pPickup = new PickupItem();
@@ -57,11 +56,11 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     float yStart = -(SCREEN_HEIGHT / 2) + (yGap / 2);
 
     unsigned int index = 0;
-    for (unsigned int j = 0; j < WAYPOINT_RESOLUTION; j++) {
-        for (unsigned int i = 0; i < WAYPOINT_RESOLUTION; i++) {
+    for (unsigned int y = 0; y < WAYPOINT_RESOLUTION; y++) {
+        for (unsigned int x = 0; x < WAYPOINT_RESOLUTION; x++) {
             Waypoint* wp = new Waypoint();
             hr = wp->initMesh(pd3dDevice, index++);
-            wp->setPosition(XMFLOAT3(xStart + (xGap * i), yStart + (yGap * j), 0));
+            wp->setPosition(XMFLOAT3(xStart + (xGap * x), yStart + (yGap * y), 0));
             m_waypoints.push_back(wp);
         }
     }
@@ -72,39 +71,57 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     int weights[COLLUMS * ROWS];
     for (unsigned int i = 0; i < m_waypoints.size(); i++) 
     {
-        weights[i] = m_waypoints[i]->isOnTrack() ? 1 : 10;
+        weights[i] = m_waypoints[i]->isOnTrack() ? 1 : 1000;
+
+        
+        if (m_waypoints[i]->isCheckPoint())
+        {
+            int checkPointIndex = m_waypoints[i]->getCheckpointIndex();
+
+            while (checkPointIndex >= m_checkPoints.size()) 
+            {
+                m_checkPoints.push_back(0);
+            }
+
+            m_checkPoints[checkPointIndex] = i;
+        }
     }
+
+    //Pathfind from checkpoint to checkpoint.
     m_AStar = new GridAStar();
     m_AStar->Init(weights,xGap,yGap,xStart,yStart);
 
-    //make a path for car 0
+    for (int i = 0; i < m_checkPoints.size(); i++)
+    {
+        int indexNext = (i + 1) < m_checkPoints.size() ? (i+1) : 0;
+        std::vector<int> path = m_AStar->PathFind(m_checkPoints[i],m_checkPoints[indexNext],false);
 
-    std::vector<int> pathToEnd = m_AStar->PathFind(Point(0, 0), Point(19, 19));
-    std::vector<int> pathToStart= m_AStar->PathFind(Point(19, 19), Point(0, 0));
+        for (auto p : path)
+        {
+            m_path.push_back(p);
+        }
+    }
+
     std::vector<Vector2D> pathPoints;
 
-    for (int p : pathToEnd)
+    for (auto p : m_path)
     {
         XMFLOAT3* pos = m_waypoints[p]->getPosition();
-        pathPoints.push_back(Vector2D(pos->x, pos->y));
+        pathPoints.push_back(Vector2D(pos->x,pos->y));
     }
 
-    for (int p : pathToStart)
-    {
-        XMFLOAT3* pos = m_waypoints[p]->getPosition();
-        pathPoints.push_back(Vector2D(pos->x, pos->y));
-    }
-
-    m_cars[0]->SetPath(pathPoints);
+     m_cars[0]->SetPath(pathPoints);
     return hr;
 }
 
 void AIManager::update(const float fDeltaTime)
 {
+    
     for (unsigned int i = 0; i < m_waypoints.size(); i++) {
         m_waypoints[i]->update(fDeltaTime);
         AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
     }
+    
 
     for (unsigned int i = 0; i < m_pickups.size(); i++) {
         m_pickups[i]->update(fDeltaTime);
@@ -142,6 +159,7 @@ void AIManager::keyPress(WPARAM param)
         case VK_NUMPAD0:
         {
             OutputDebugStringA("0 pressed \n");
+
             break;
         }
         case VK_NUMPAD1:
@@ -156,6 +174,9 @@ void AIManager::keyPress(WPARAM param)
         case VK_SPACE:
         {
             OutputDebugStringA("space pressed \n");
+            m_checkPointIndex++;
+            if (m_checkPointIndex >= m_checkPoints.size())
+                m_checkPointIndex = 0;
             break;
         }
 

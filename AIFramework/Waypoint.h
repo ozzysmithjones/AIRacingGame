@@ -6,12 +6,15 @@ class Waypoint :
 public:
     virtual HRESULT initMesh(ID3D11Device* pd3dDevice, const int index);
 
-    bool isOnTrack() { return m_isOnTrack; }
+    int getCheckpointIndex() const { return m_checkpointIndex; }
+    bool isOnTrack() const { return m_isOnTrack; }
+    bool isCheckPoint() const { return m_isCheckpoint; }
     void setVisible(const bool visible) { m_visible = visible; }
     bool isVisible() {return m_visible;}
 
 private:
-
+    
+    int  m_checkpointIndex;
     bool m_isOnTrack;
     bool m_isCheckpoint;
     bool m_visible;

@@ -6,7 +6,7 @@
 #include <DirectXCollision.h>
 #include <vector>
 
-using namespace std;
+//using namespace std;
 
 class Vehicle;
 class DrawableGameObject;
@@ -14,10 +14,11 @@ class PickupItem;
 class Waypoint;
 class GridAStar;
 
-typedef vector<DrawableGameObject*> vecDrawables;
-typedef vector<Vehicle*> vecVehicles;
-typedef vector<Waypoint*> vecWaypoints;
-typedef vector<PickupItem*> vecPickups;
+typedef std::vector<DrawableGameObject*> vecDrawables;
+typedef std::vector<Vehicle*> vecVehicles;
+typedef std::vector<Waypoint*> vecWaypoints;
+typedef std::vector<PickupItem*> vecPickups;
+typedef std::vector<int> vecPath;
 
 class AIManager
 {
@@ -35,10 +36,12 @@ protected:
 
 private:
 
+	int m_checkPointIndex   = 0;
 	GridAStar*				m_AStar;
 	vecWaypoints            m_waypoints;
 	vecPickups              m_pickups;
 	vecVehicles				m_cars;
-
+	vecPath					m_path;
+	vecPath                 m_checkPoints;
 };
 

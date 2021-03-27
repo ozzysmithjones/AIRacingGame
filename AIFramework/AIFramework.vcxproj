@@ -365,12 +365,14 @@
     <ClCompile Include="BehaviourTree.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DrawableGameObject.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="PickupItem.cpp" />
     <ClCompile Include="PriorityQueue.cpp" />
     <ClCompile Include="FiniteStateMachine.cpp" />
+    <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="Waypoint.cpp" />
   </ItemGroup>
@@ -381,6 +383,7 @@
     <ClInclude Include="BehaviourTree.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="DrawableGameObject.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="main.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
@@ -388,6 +391,7 @@
     <ClInclude Include="PriorityQueue.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="FiniteStateMachine.h" />
+    <ClInclude Include="Spline.h" />
     <ClInclude Include="structures.h" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="Vehicle.h" />

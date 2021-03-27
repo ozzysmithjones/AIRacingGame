@@ -25,6 +25,10 @@
     <ClCompile Include="FiniteStateMachine.cpp">
       <Filter>AI</Filter>
     </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIManager.h" />
@@ -56,6 +60,10 @@
     <ClInclude Include="FiniteStateMachine.h">
       <Filter>AI</Filter>
     </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\blue.dds">

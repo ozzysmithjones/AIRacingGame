@@ -14,39 +14,40 @@ HRESULT	Vehicle::initMesh(ID3D11Device* pd3dDevice)
 	m_currentAngularVelocity = 4.0f;
 	setVehiclePosition(Vector2D(0, 0));
 
-	m_lastPosition = Vector2D(0, 0);
-
 	return hr;
 }
 
 void Vehicle::update(const float deltaTime)
 {
-
-	Vector2D diff = m_positionTo - m_currentPosition;
-	if (diff.LengthSq() > 9.0f)
+	if (m_isPath)
 	{
-		//m_arrived = false;
-		m_targetRotation = atan2f(diff.y, diff.x);
-		float angleStep = deltaTime * PI * m_currentAngularVelocity;
-		float clockwise = getClockwise(m_radianRotation, m_targetRotation);
-
-		//rotation, direction and position
-		m_radianRotation = addRadian(clockwise * angleStep, m_radianRotation);	
-		Vector2D direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
-
-		//work out turning circle, and slow down if the target position is in it.
-		//SlowInTurnCircle(deltaTime,clockwise, direction);
-
-		m_currentPosition += direction * deltaTime * m_currentSpeed;
+		m_pathProgress += deltaTime * 5.0f;
+		m_currentPosition = m_path.GetPoint(m_pathProgress);
+		Vector2D gradient = m_path.GetGradient(m_pathProgress);
+		m_radianRotation = atan2f(gradient.y,gradient.x);
+		
 	}
 	else 
 	{
-		if (m_isPath) 
+		Vector2D diff = m_positionTo - m_currentPosition;
+		if (diff.LengthSq() > 9.0f)
 		{
-			m_pathIndex++;
-			if (m_pathIndex >= m_path.size())
-				m_pathIndex = 0;
-			m_positionTo = m_path[m_pathIndex];
+
+
+			//calculate target angle
+			m_targetRotation = atan2f(diff.y, diff.x);
+			float angleStep = deltaTime * PI * m_currentAngularVelocity;
+			float clockwise = getClockwise(m_radianRotation, m_targetRotation);
+
+			//rotation, direction and position
+			m_radianRotation = addRadian(clockwise * angleStep, m_radianRotation);
+			Vector2D direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
+
+			//work out turning circle, and slow down if the target position is in it.
+			SlowInTurnCircle(deltaTime, clockwise, direction);
+
+
+			m_currentPosition += direction * deltaTime * m_currentSpeed;
 		}
 	}
 
@@ -158,6 +159,15 @@ void Vehicle::setVehiclePosition(Vector2D position)
 	setPosition(XMFLOAT3((float)position.x, (float)position.y, 0));
 }
 
+void Vehicle::SetPath(std::vector<Vector2D>& path)
+{
+	m_isPath = true;
+	m_path = SplineCurve(path);
+	m_currentPosition = m_path[0];
+	m_positionTo = m_path[1];
+}
+
+
 void Vehicle::Accelerate(float deltaTime)
 {
 	setCurrentSpeed(m_currentSpeedAlpha + deltaTime * 20.0f);
@@ -168,11 +178,4 @@ void Vehicle::Break(float deltaTime)
 	setCurrentSpeed(m_currentSpeedAlpha - deltaTime * 20.0f);
 }
 
-void Vehicle::SetPath(std::vector<Vector2D>& path)
-{
-	m_isPath = true;
-	m_path = path;
-	m_pathIndex = 0;
-	m_positionTo = path[0];
-}
 
