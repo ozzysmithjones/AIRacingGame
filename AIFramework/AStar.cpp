@@ -140,7 +140,7 @@ std::vector<int> GridAStar::PathFind(Point start, Point end, bool includeStart)
 				}
 			}
 
-			//create a new a star node and add it to the frontier.
+			//create a new A star node and add it to the priority queue.
 			AStarNode node;
 			node.breadcrumb = currentNode.position;
 			node.position = index;

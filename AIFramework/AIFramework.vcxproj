@@ -359,10 +359,12 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIController.cpp" />
     <ClCompile Include="AIManager.cpp" />
     <ClCompile Include="AStar.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="BehaviourTree.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DrawableGameObject.cpp" />
     <ClCompile Include="Event.cpp" />
@@ -377,10 +379,12 @@
     <ClCompile Include="Waypoint.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIController.h" />
     <ClInclude Include="AIManager.h" />
     <ClInclude Include="AStar.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="BehaviourTree.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="DrawableGameObject.h" />
     <ClInclude Include="Event.h" />

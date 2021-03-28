@@ -29,6 +29,12 @@
       <Filter>AI</Filter>
     </ClCompile>
     <ClCompile Include="Spline.cpp" />
+    <ClCompile Include="AIController.cpp">
+      <Filter>Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Controllers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIManager.h" />
@@ -64,6 +70,12 @@
       <Filter>AI</Filter>
     </ClInclude>
     <ClInclude Include="Spline.h" />
+    <ClInclude Include="AIController.h">
+      <Filter>Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>Controllers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\blue.dds">
@@ -106,6 +118,9 @@
     </Filter>
     <Filter Include="AI">
       <UniqueIdentifier>{df5ec9d2-296e-4422-9ed5-f5d343d56b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controllers">
+      <UniqueIdentifier>{c2a185c9-cb62-412e-90ef-50c562bbaf0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

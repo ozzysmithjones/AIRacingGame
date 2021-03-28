@@ -6,6 +6,7 @@
 #include "AStar.h"
 
 #include "main.h"
+#include "AIController.h"
 
 void AIManager::Release()
 {
@@ -40,6 +41,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
         Vehicle* car = new Vehicle();
         hr = car->initMesh(pd3dDevice);
         car->setPosition(XMFLOAT3(xPos + i, yPos, 0));
+
         if (FAILED(hr))
             return hr;
 
@@ -110,7 +112,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
         pathPoints.push_back(Vector2D(pos->x,pos->y));
     }
 
-     m_cars[0]->SetPath(pathPoints);
+    m_cars[0]->setController(new AIController(m_cars, m_pickups, pathPoints, 100));
     return hr;
 }
 
@@ -119,9 +121,8 @@ void AIManager::update(const float fDeltaTime)
     
     for (unsigned int i = 0; i < m_waypoints.size(); i++) {
         m_waypoints[i]->update(fDeltaTime);
-        AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
+       // AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
     }
-    
 
     for (unsigned int i = 0; i < m_pickups.size(); i++) {
         m_pickups[i]->update(fDeltaTime);
@@ -149,7 +150,7 @@ void AIManager::update(const float fDeltaTime)
 void AIManager::mouseUp(int x, int y)
 {
     int carMoved = rand() % m_cars.size();
-    m_cars[carMoved]->setPositionTo(Vector2D(x, y));
+    m_cars[carMoved]->setPositionTo(Vector2D(x, y),true);
 }
 
 void AIManager::keyPress(WPARAM param)
