@@ -30,10 +30,19 @@
     </ClCompile>
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="AIController.cpp">
-      <Filter>Controllers</Filter>
+      <Filter>AI\Controllers</Filter>
     </ClCompile>
     <ClCompile Include="Controller.cpp">
-      <Filter>Controllers</Filter>
+      <Filter>AI\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="ObstacleAvoidance.cpp">
+      <Filter>AI\CarBehaviourTree</Filter>
+    </ClCompile>
+    <ClCompile Include="ReturnToTrack.cpp">
+      <Filter>AI\CarBehaviourTree</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveToCheckPoint.cpp">
+      <Filter>AI\CarBehaviourTree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,10 +80,19 @@
     </ClInclude>
     <ClInclude Include="Spline.h" />
     <ClInclude Include="AIController.h">
-      <Filter>Controllers</Filter>
+      <Filter>AI\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="Controller.h">
-      <Filter>Controllers</Filter>
+      <Filter>AI\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="ObstacleAvoidance.h">
+      <Filter>AI\CarBehaviourTree</Filter>
+    </ClInclude>
+    <ClInclude Include="ReturnToTrack.h">
+      <Filter>AI\CarBehaviourTree</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveToCheckPoint.h">
+      <Filter>AI\CarBehaviourTree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -119,8 +137,11 @@
     <Filter Include="AI">
       <UniqueIdentifier>{df5ec9d2-296e-4422-9ed5-f5d343d56b42}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Controllers">
+    <Filter Include="AI\Controllers">
       <UniqueIdentifier>{c2a185c9-cb62-412e-90ef-50c562bbaf0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\CarBehaviourTree">
+      <UniqueIdentifier>{f70d954f-896d-4963-842d-170f28134a92}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

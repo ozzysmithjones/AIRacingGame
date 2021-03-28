@@ -371,9 +371,12 @@
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="MoveToCheckPoint.cpp" />
+    <ClCompile Include="ObstacleAvoidance.cpp" />
     <ClCompile Include="PickupItem.cpp" />
     <ClCompile Include="PriorityQueue.cpp" />
     <ClCompile Include="FiniteStateMachine.cpp" />
+    <ClCompile Include="ReturnToTrack.cpp" />
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="Waypoint.cpp" />
@@ -391,10 +394,13 @@
     <ClInclude Include="main.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="MoveToCheckPoint.h" />
+    <ClInclude Include="ObstacleAvoidance.h" />
     <ClInclude Include="PickupItem.h" />
     <ClInclude Include="PriorityQueue.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="FiniteStateMachine.h" />
+    <ClInclude Include="ReturnToTrack.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="structures.h" />
     <ClInclude Include="Vector2D.h" />

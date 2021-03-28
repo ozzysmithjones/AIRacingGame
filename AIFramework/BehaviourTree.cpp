@@ -23,6 +23,7 @@ void BehaviourTree::Update(const float deltaTime)
 		if (childToPush != nullptr)
 		{
 			m_behaviourStack.push(childToPush);
+			childToPush->Start();
 		}
 		else 
 		{
@@ -41,6 +42,7 @@ BehaviourTree::BehaviourTree(Behaviour* root)
 {
 	m_root = root;
 	m_behaviourStack.push(root);
+	root->Start();
 }
 
 BehaviourTree::~BehaviourTree()
@@ -91,6 +93,11 @@ SequencerBehaviour::~SequencerBehaviour()
 	}
 }
 
+void SequencerBehaviour::Start()
+{
+}
+
+
 void SequencerBehaviour::Reset()
 {
 	m_index = 0;
@@ -99,6 +106,10 @@ void SequencerBehaviour::Reset()
 void SelectorBehaviour::Reset()
 {
 	m_index = 0;
+}
+
+void SelectorBehaviour::Start()
+{
 }
 
 
@@ -156,6 +167,10 @@ SelectorBehaviour::~SelectorBehaviour()
 }
 
 void InverterBehaviour::Reset()
+{
+}
+
+void InverterBehaviour::Start()
 {
 }
 

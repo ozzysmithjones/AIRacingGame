@@ -2,11 +2,20 @@
 
 
 
-AIController::AIController(std::vector<Vehicle*>& vecVehicles, std::vector<PickupItem*>& vecPickUps, std::vector<Vector2D>& path, std::vector<Vector2D>& checkPoints, float pathWidth)
-	: m_vecVehicles(vecVehicles), m_vecPickUps(vecPickUps), m_vecCheckPoints(checkPoints)
+AIController::AIController(Vehicle* vehicle,std::vector<Vehicle*>& vecVehicles, std::vector<PickupItem*>& vecPickUps, std::vector<Vector2D>& path, std::vector<Vector2D>& checkPoints, float pathWidth)
 {
-	m_pathWidth = 40.0f;
-	m_path = SplineCurve(path);
+
+	Behaviour* behaviours[2];
+	behaviours[0] = new ReturnToTrack(vehicle, path, 40.0f);
+	behaviours[1] = new MoveToCheckPoint(vehicle, checkPoints);
+	SequencerBehaviour* sequencer = new SequencerBehaviour(behaviours,2);
+
+	m_behaviourTree = new BehaviourTree(sequencer);
+}
+
+AIController::~AIController()
+{
+	delete m_behaviourTree; m_behaviourTree = nullptr;
 }
 
 void AIController::OnArrive(Vector2D point)
@@ -16,44 +25,5 @@ void AIController::OnArrive(Vector2D point)
 
 void AIController::Control(Vehicle* vehicle, const float deltaTime)
 {
-	vehicle->StopMovingTowardsPoint();
-
-	int startNode = 0;
-	int endNode = 0;
-
-	Vector2D position = vehicle->getVehiclePosition();
-	Vector2D predicted = vehicle->getPredictedPosition(deltaTime);
-	Vector2D pathPoint = m_path.GetNearestLinePoint(predicted,startNode,endNode);
-
-	Vector2D nextCheckPoint = m_vecCheckPoints[m_checkPointIndex];
-
-	float distanceToRoad = (predicted - pathPoint).Length();
-	float distanceToCheckPoint = (nextCheckPoint - position).Length();
-
-	if (distanceToRoad > m_pathWidth)
-	{
-		if (!m_movingOffTrack) 
-		{
-			m_movingOffTrack = true;
-			m_pathResume = pathPoint;
-		}
-
-		vehicle->RotateTowards(deltaTime, m_pathResume);
-		
-	}
-	else 
-	{
-		m_movingOffTrack = false;
-		vehicle->RotateTowards(deltaTime, nextCheckPoint);
-	}
-	
-	vehicle->Accelerate(deltaTime);
-
-	if (distanceToCheckPoint < 9.0f)
-	{
-		m_checkPointIndex++;
-		if (m_checkPointIndex >= m_vecCheckPoints.size())
-			m_checkPointIndex = 0;
-	}
-	
+	m_behaviourTree->Update(deltaTime);
 }

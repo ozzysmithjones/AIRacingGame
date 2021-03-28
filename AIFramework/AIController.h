@@ -1,25 +1,22 @@
 #pragma once
 #include "Controller.h"
-#include "Spline.h"
+#include "BehaviourTree.h"
+
+//behaviours for behaviour tree
+#include "MoveToCheckPoint.h"
+#include "ReturnToTrack.h"
 
 class AIController : public Controller
 {
 
 public:
 
-	AIController(std::vector<Vehicle*>& vecVehicles, std::vector<PickupItem*>& vecPickUps, std::vector<Vector2D>& path,std::vector<Vector2D>& checkPoints, float pathWidth);
+	AIController(Vehicle* vehicle,std::vector<Vehicle*>& vecVehicles, std::vector<PickupItem*>& vecPickUps, std::vector<Vector2D>& path,std::vector<Vector2D>& checkPoints, float pathWidth);
+	~AIController();
 
 private:
 
-	bool m_movingOffTrack = false;
-	Vector2D m_pathResume;
-	int m_checkPointIndex = 0;
-
-	std::vector<Vehicle*>& m_vecVehicles;
-	std::vector<PickupItem*>& m_vecPickUps;
-	std::vector<Vector2D>& m_vecCheckPoints;
-	SplineCurve m_path;
-	float m_pathWidth;
+	BehaviourTree* m_behaviourTree;
 
 	// Inherited via Controller
 	virtual void Control(Vehicle* vehicle, const float deltaTime) override;

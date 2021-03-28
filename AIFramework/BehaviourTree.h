@@ -16,11 +16,12 @@ class Behaviour
 public:
 
 	virtual void Reset() = 0;
+	virtual void Start() = 0;
 	virtual BehaviourState Resume(Behaviour* child,BehaviourState childBehaviourState) = 0;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) = 0;
 };
 
-class SequencerBehaviour : Behaviour
+class SequencerBehaviour : public Behaviour
 {
 private:
 
@@ -28,6 +29,7 @@ private:
 	std::vector<Behaviour*> m_children;
 
 	virtual void Reset() override;
+	virtual void Start() override;
 	virtual BehaviourState Resume(Behaviour* child,BehaviourState childBehaviourState) override;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 
@@ -36,7 +38,7 @@ public:
 	~SequencerBehaviour();
 };
 
-class SelectorBehaviour : Behaviour
+class SelectorBehaviour : public Behaviour
 {
 
 private:
@@ -46,6 +48,7 @@ private:
 
 	// Inherited via Behaviour
 	virtual void Reset() override;
+	virtual void Start() override;
 	virtual BehaviourState Resume(Behaviour* child,BehaviourState childBehaviourState) override;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 
@@ -55,7 +58,7 @@ public:
 	~SelectorBehaviour();
 };
 
-class InverterBehaviour : Behaviour
+class InverterBehaviour : public Behaviour
 {
 
 private:
@@ -63,6 +66,7 @@ private:
 
 	// Inherited via Behaviour
 	virtual void Reset() override;
+	virtual void Start() override;
 	virtual BehaviourState Resume(Behaviour* child,BehaviourState childBehaviourState) override;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 public:

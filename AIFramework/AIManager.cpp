@@ -117,7 +117,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
         pathPointCoords.push_back(Vector2D(pos->x,pos->y));
     }
 
-    m_cars[0]->setController(new AIController(m_cars, m_pickups, pathPointCoords,m_checkPointCoords, 100));
+    m_cars[0]->setController(new AIController(m_cars[0],m_cars, m_pickups, pathPointCoords,m_checkPointCoords, 100));
     return hr;
 }
 
