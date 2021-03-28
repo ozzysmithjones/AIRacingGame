@@ -5,6 +5,7 @@
 #include <directxcolors.h>
 #include <DirectXCollision.h>
 #include <vector>
+#include "Vector2D.h"
 
 //using namespace std;
 
@@ -18,7 +19,8 @@ typedef std::vector<DrawableGameObject*> vecDrawables;
 typedef std::vector<Vehicle*> vecVehicles;
 typedef std::vector<Waypoint*> vecWaypoints;
 typedef std::vector<PickupItem*> vecPickups;
-typedef std::vector<int> vecPath;
+typedef std::vector<int> VecPathIndecies;
+typedef std::vector<Vector2D> vecPathCoordinates;
 
 class AIManager
 {
@@ -41,7 +43,8 @@ private:
 	vecWaypoints            m_waypoints;
 	vecPickups              m_pickups;
 	vecVehicles				m_cars;
-	vecPath					m_path;
-	vecPath                 m_checkPoints;
+	VecPathIndecies		    m_path;
+	VecPathIndecies         m_checkPoints;
+	vecPathCoordinates      m_checkPointCoords;
 };
 

@@ -32,7 +32,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     // create the vehicle ------------------------------------------------
 
     float xPos = 0;
-    float yPos = 0;
+    float yPos = 500;
 
     int numCars = 3;
 
@@ -40,7 +40,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     {
         Vehicle* car = new Vehicle();
         hr = car->initMesh(pd3dDevice);
-        car->setPosition(XMFLOAT3(xPos + i, yPos, 0));
+        car->setVehiclePosition(Vector2D(xPos + i, yPos));
 
         if (FAILED(hr))
             return hr;
@@ -71,6 +71,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 
 
     int weights[COLLUMS * ROWS];
+    
     for (unsigned int i = 0; i < m_waypoints.size(); i++) 
     {
         weights[i] = m_waypoints[i]->isOnTrack() ? 1 : 1000;
@@ -83,9 +84,13 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
             while (checkPointIndex >= m_checkPoints.size()) 
             {
                 m_checkPoints.push_back(0);
+                m_checkPointCoords.push_back(Vector2D(0, 0));
             }
 
             m_checkPoints[checkPointIndex] = i;
+
+            XMFLOAT3* pos = m_waypoints[i]->getPosition();
+            m_checkPointCoords[checkPointIndex] = Vector2D(pos->x, pos->y);
         }
     }
 
@@ -104,15 +109,15 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
         }
     }
 
-    std::vector<Vector2D> pathPoints;
+    std::vector<Vector2D> pathPointCoords;
 
     for (auto p : m_path)
     {
         XMFLOAT3* pos = m_waypoints[p]->getPosition();
-        pathPoints.push_back(Vector2D(pos->x,pos->y));
+        pathPointCoords.push_back(Vector2D(pos->x,pos->y));
     }
 
-    m_cars[0]->setController(new AIController(m_cars, m_pickups, pathPoints, 100));
+    m_cars[0]->setController(new AIController(m_cars, m_pickups, pathPointCoords,m_checkPointCoords, 100));
     return hr;
 }
 
@@ -150,7 +155,7 @@ void AIManager::update(const float fDeltaTime)
 void AIManager::mouseUp(int x, int y)
 {
     int carMoved = rand() % m_cars.size();
-    m_cars[carMoved]->setPositionTo(Vector2D(x, y),true);
+    m_cars[carMoved]->MoveTowardsPoint(Vector2D(x, y),true);
 }
 
 void AIManager::keyPress(WPARAM param)

@@ -22,7 +22,8 @@ public:
 	void setController(Controller* controller) { m_controller = controller; }
 	void setMaxSpeed(const float maxSpeed) { m_maxSpeed = maxSpeed; }
 	void SetNormalisedSpeed(float speed); // a ratio: a value between 0 and 1 (1 being max speed)
-	void setPositionTo(Vector2D positionTo, bool slowToTarget); // a position to move to
+	void MoveTowardsPoint(Vector2D positionTo, bool slowToTarget); // a position to move to
+	void StopMovingTowardsPoint() { m_isPositionTo = false; };
 	void setVehiclePosition(Vector2D position); // the current position - this resets positionTo
 	void SetPath(std::vector<Vector2D>& path);
 
@@ -36,6 +37,8 @@ public:
 
 	void Accelerate(float deltaTime);
 	void Break(float deltaTime);
+	void Rotate(float deltaTime, int direction);
+	void RotateTowards(float deltaTime,Vector2D point);
 	Circle GetTurnCircle() const { return m_turnCircle; }
 
 	~Vehicle();

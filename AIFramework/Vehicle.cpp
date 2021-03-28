@@ -13,7 +13,9 @@ HRESULT	Vehicle::initMesh(ID3D11Device* pd3dDevice)
 	m_currentSpeed = m_maxSpeed;
 	m_currentNormalisedSpeed = 1;
 	m_currentAngularVelocity = 1.0f;
-	setVehiclePosition(Vector2D(0, 0));
+	m_direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
+	//setVehiclePosition(Vector2D(0, 0));
+
 
 	return hr;
 }
@@ -74,19 +76,7 @@ void Vehicle::MoveTowardsTarget(const float& deltaTime, Vector2D positionTo)
 			SetNormalisedSpeed(m_currentNormalisedSpeed + accelerateSpeed * deltaTime);
 		}
 
-
-		//calculate target angle
-		float m_targetRotation = atan2f(diff.y, diff.x);
-		float angleStep = deltaTime * PI * m_currentAngularVelocity;
-		float clockwise = getClockwise(m_radianRotation, m_targetRotation);
-
-		//rotation, direction and position
-		m_radianRotation = addRadian(clockwise * angleStep, m_radianRotation);
-		m_direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
-
-		//work out turning circle, and slow down if the target position is in it.
-		//SlowInTurnCircle(deltaTime, clockwise, m_direction);
-
+		RotateTowards(deltaTime, positionTo);
 		m_currentPosition += m_direction * deltaTime * m_currentSpeed;
 	}
 	else if (!m_arrived)
@@ -199,7 +189,7 @@ void Vehicle::SetNormalisedSpeed(float speed)
 }
 
 // a position to move to
-void Vehicle::setPositionTo(Vector2D position, bool slowToTarget)
+void Vehicle::MoveTowardsPoint(Vector2D position, bool slowToTarget)
 {
 	m_positionTo = position;
 	m_isPositionTo = true;
@@ -219,7 +209,7 @@ void Vehicle::SetPath(std::vector<Vector2D>& path)
 	m_isPath = true;
 	m_path = SplineCurve(path);
 	m_currentPosition = m_path[0];
-	m_positionTo = m_path[1];
+	//m_positionTo = m_path[1];
 }
 
 
@@ -236,6 +226,26 @@ void Vehicle::Accelerate(float deltaTime)
 void Vehicle::Break(float deltaTime)
 {
 	SetNormalisedSpeed(m_currentNormalisedSpeed - deltaTime * breakSpeed);
+}
+
+void Vehicle::Rotate(float deltaTime, int direction)
+{
+	m_radianRotation = addRadian(m_radianRotation,m_currentAngularVelocity * PI * deltaTime * direction);
+	m_direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
+}
+
+void Vehicle::RotateTowards(float deltaTime, Vector2D point)
+{
+	Vector2D diff = point - m_currentPosition;
+
+	//calculate target angle
+	float m_targetRotation = atan2f(diff.y, diff.x);
+	float angleStep = deltaTime * PI * m_currentAngularVelocity;
+	float clockwise = getClockwise(m_radianRotation, m_targetRotation);
+
+	//rotation and direction
+	m_radianRotation = addRadian(clockwise * angleStep, m_radianRotation);
+	m_direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
 }
 
 
