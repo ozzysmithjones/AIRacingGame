@@ -6,8 +6,11 @@ void ReturnToTrack::Reset()
 
 void ReturnToTrack::Start()
 {
+	int startNode;
+	int endNode;
 	Vector2D position = m_vehicle->getVehiclePosition();
-	m_pathResumePoint = m_path.GetNearestLinePoint(position);
+	m_pathResumePoint = m_path.GetNearestLinePoint(position,startNode,endNode);
+	m_pathDirection = m_path[endNode] - m_path[startNode];
 }
 
 BehaviourState ReturnToTrack::Resume(Behaviour* child, BehaviourState childBehaviourState)
@@ -19,11 +22,11 @@ BehaviourState ReturnToTrack::Update(const float deltaTime, Behaviour*& childToP
 {
 	Vector2D position = m_vehicle->getVehiclePosition();
 	Vector2D predicted = m_vehicle->getPredictedPosition(deltaTime);
-	float distanceToRoad = (predicted - m_pathResumePoint).Length();
+	Vector2D toRoad = (m_pathResumePoint - predicted);
 
-	if (distanceToRoad > m_pathWidth)
+	if (toRoad.Length() > m_pathWidth)
 	{
-		m_vehicle->MoveTowardsPoint(m_pathResumePoint, false);
+		m_vehicle->MoveTowardsPoint(m_pathResumePoint, true);
 		return BehaviourState::RUNNING;
 	}
 

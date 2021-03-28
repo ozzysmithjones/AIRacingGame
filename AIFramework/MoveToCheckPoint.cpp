@@ -22,10 +22,10 @@ BehaviourState MoveToCheckPoint::Update(const float deltaTime, Behaviour*& child
 	float distance = (nextCheckPoint - position).Length();
 
 	//move towards checkpoint.
-	if (distance > 9.0f)
+	if (distance > 16.0f)
 	{
 		m_vehicle->MoveTowardsPoint(nextCheckPoint, false);
-		return BehaviourState::RUNNING;
+		return BehaviourState::SUCCESS;
 	}
 
 	//update next checkpoint

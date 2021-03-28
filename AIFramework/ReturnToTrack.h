@@ -12,7 +12,9 @@ class ReturnToTrack :
 private:
 
 	float m_pathWidth = 40.0f;
+	Vector2D m_pathDirection;
 	Vector2D m_pathResumePoint;
+	
 	Vehicle* m_vehicle;
 	SplineCurve m_path;
 

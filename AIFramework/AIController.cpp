@@ -6,7 +6,7 @@ AIController::AIController(Vehicle* vehicle,std::vector<Vehicle*>& vecVehicles, 
 {
 
 	Behaviour* behaviours[2];
-	behaviours[0] = new ReturnToTrack(vehicle, path, 40.0f);
+	behaviours[0] = new ReturnToTrack(vehicle, path, 80.0f);
 	behaviours[1] = new MoveToCheckPoint(vehicle, checkPoints);
 	SequencerBehaviour* sequencer = new SequencerBehaviour(behaviours,2);
 
