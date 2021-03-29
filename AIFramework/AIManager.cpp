@@ -32,7 +32,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     // create the vehicle ------------------------------------------------
 
     float xPos = 0;
-    float yPos = 500;
+    float yPos = 200;
 
     int numCars = 3;
 
@@ -40,7 +40,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     {
         Vehicle* car = new Vehicle();
         hr = car->initMesh(pd3dDevice);
-        car->setVehiclePosition(Vector2D(xPos + i, yPos));
+        car->setVehiclePosition(Vector2D(xPos + i * 40, yPos));
 
         if (FAILED(hr))
             return hr;
@@ -117,7 +117,10 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
         pathPointCoords.push_back(Vector2D(pos->x,pos->y));
     }
 
-    m_cars[0]->setController(new AIController(m_cars[0],m_cars, m_pickups, pathPointCoords,m_checkPointCoords, 100));
+    for (auto c : m_cars)
+    {
+        c->setController(new AIController(c, m_cars, m_pickups, pathPointCoords, m_checkPointCoords, 100));
+    }
     return hr;
 }
 
@@ -126,7 +129,7 @@ void AIManager::update(const float fDeltaTime)
     
     for (unsigned int i = 0; i < m_waypoints.size(); i++) {
         m_waypoints[i]->update(fDeltaTime);
-       // AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
+        AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
     }
 
     for (unsigned int i = 0; i < m_pickups.size(); i++) {
@@ -155,7 +158,7 @@ void AIManager::update(const float fDeltaTime)
 void AIManager::mouseUp(int x, int y)
 {
     int carMoved = rand() % m_cars.size();
-    m_cars[carMoved]->MoveTowardsPoint(Vector2D(x, y),true);
+    //m_cars[carMoved]->MoveTowards(,Vector2D(x, y),true);
 }
 
 void AIManager::keyPress(WPARAM param)

@@ -14,11 +14,13 @@ void BehaviourTree::Reset()
 void BehaviourTree::Update(const float deltaTime)
 {
 	Behaviour* childToPush;
-
+	BehaviourState behaviourState;
+	bool completedChildBehaviour;
 	do 
 	{
 		childToPush = nullptr;
-		BehaviourState behaviourState = m_behaviourStack.top()->Update(deltaTime, childToPush);
+		behaviourState = m_behaviourStack.top()->Update(deltaTime, childToPush);
+		completedChildBehaviour = behaviourState != BehaviourState::RUNNING && m_behaviourStack.size() > 1;
 
 		if (childToPush != nullptr)
 		{
@@ -35,7 +37,7 @@ void BehaviourTree::Update(const float deltaTime)
 			}
 		}
 
-	} while (childToPush != nullptr);
+	} while (childToPush != nullptr || completedChildBehaviour);
 }
 
 BehaviourTree::BehaviourTree(Behaviour* root)

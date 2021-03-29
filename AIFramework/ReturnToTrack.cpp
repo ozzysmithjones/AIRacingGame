@@ -26,7 +26,7 @@ BehaviourState ReturnToTrack::Update(const float deltaTime, Behaviour*& childToP
 
 	if (toRoad.Length() > m_pathWidth)
 	{
-		m_vehicle->MoveTowardsPoint(m_pathResumePoint, true);
+		m_vehicle->MoveTowards(deltaTime, m_pathResumePoint, true,false);
 		return BehaviourState::RUNNING;
 	}
 

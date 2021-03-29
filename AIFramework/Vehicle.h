@@ -14,41 +14,47 @@ struct Circle
 
 class Vehicle : public DrawableGameObject
 {
-public:
+public://[Movement based commands to give to the vehicle from AI or Input]
+
+	void Move(float deltaTime);
+	void MoveTowards(float deltaTime,Vector2D positionTo, bool slowToTarget, bool correctTurnCircle); // a position to move to
+	void Accelerate(float deltaTime, float maxNormalisedSpeed = 1.0f);
+	void Break(float deltaTime, float minNormalisedSpeed = 0.0f);
+	void Rotate(float deltaTime, int direction);
+	void RotateAwayFrom(float deltaTime, Vector2D point);
+	void RotateTowards(float deltaTime,Vector2D point, bool correctTurnCircle);
+
+public://[getters/setters for velocity, position, direction, or AI controller]
 
 	virtual HRESULT initMesh(ID3D11Device* pd3dDevice);
 	virtual void update(const float deltaTime);
 
 	void setController(Controller* controller) { m_controller = controller; }
+	void setVehiclePosition(Vector2D position);
 	void setMaxSpeed(const float maxSpeed) { m_maxSpeed = maxSpeed; }
-	void SetNormalisedSpeed(float speed); // a ratio: a value between 0 and 1 (1 being max speed)
-	void MoveTowardsPoint(Vector2D positionTo, bool slowToTarget); // a position to move to
-	void StopMovingTowardsPoint() { m_isPositionTo = false; };
-	void setVehiclePosition(Vector2D position); // the current position - this resets positionTo
-	void SetPath(std::vector<Vector2D>& path);
+	void SetNormalisedSpeed(float speed);
 
 	Controller* getController() const { return m_controller; }
-	float getMaxSpeed() const { return m_maxSpeed; }
-	float getCurrentSpeed() const { return m_currentSpeed; }
-	float getAngularVelocity() const { return m_currentAngularVelocity; }
+	Circle GetTurnCircle() const { return m_turnCircle; }
 	Vector2D getVehiclePosition() const { return m_currentPosition; }
 	Vector2D getVehicleDirection() const { return m_direction; }
 	Vector2D getPredictedPosition(float time);
-
-	void Accelerate(float deltaTime);
-	void Break(float deltaTime);
-	void Rotate(float deltaTime, int direction);
-	void RotateTowards(float deltaTime,Vector2D point);
-	Circle GetTurnCircle() const { return m_turnCircle; }
+	float getMaxSpeed() const { return m_maxSpeed; }
+	float getCurrentSpeed() const { return m_currentSpeed; }
+	float getAngularVelocity() const { return m_currentAngularVelocity; }
 
 	~Vehicle();
 
-private:
+private://[radian math functions]
 
 	float getDegrees(float radians);
 	float getRadians(float degrees);
 	float addRadian(float a, float b); //adds two radians and returns the result.(includes wrapping)
 	float getClockwise(float a, float b, float maxProximity = 0.01f); //get's the shortest path between two angles.(1 = clockwise, -1 = anti-clockwise)
+
+	bool PointInTurnCircle(Vector2D point, Vector2D moveDirection, float rotationDirection, float speed);
+
+private:
 
 	float accelerateSpeed = 1.0f;
 	float breakSpeed = 1.0f;
@@ -58,23 +64,12 @@ private:
 	float m_currentSpeed;
 	float m_currentAngularVelocity;
 	
+	Controller* m_controller = nullptr;
 	Vector2D m_currentPosition;
-	Vector2D m_positionTo;
 	Vector2D m_direction;
-
-	bool  m_slowToTarget = false;
-	bool  m_isPositionTo = false;
 	Circle m_turnCircle;
 
-	void MoveTowardsTarget(const float& deltaTime, Vector2D positionTo);
-	void SlowInTurnCircle(float deltaTime, float clockwise, Vector2D& direction);
-
-
-	Controller* m_controller = nullptr;
-
-	float m_pathProgress;
-	bool m_arrived = false;
-	bool m_isPath = false;
-	SplineCurve m_path;
+	//void SlowInTurnCircle(float deltaTime, float clockwise, Vector2D& direction);
+	
 };
 

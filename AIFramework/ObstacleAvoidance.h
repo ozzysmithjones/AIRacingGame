@@ -7,7 +7,9 @@ class ObstacleAvoidance :
 {
 private:
 
+	std::vector<Vehicle*>& m_vehicles;
 	Vehicle* m_vehicle;
+	float m_radius = 60.0f;
 
 	// Inherited via Behaviour
 	virtual void Reset() override;
@@ -15,10 +17,10 @@ private:
 	virtual BehaviourState Resume(Behaviour* child, BehaviourState childBehaviourState) override;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 
+	void CheckForCollisions();
+
 public:
 
-	ObstacleAvoidance(Vehicle* vehicle);
-
-	
+	ObstacleAvoidance(Vehicle* vehicle, std::vector<Vehicle*>& vehicles);
 };
 

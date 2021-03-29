@@ -4,6 +4,7 @@
 
 //behaviours for behaviour tree
 #include "MoveToCheckPoint.h"
+#include "ObstacleAvoidance.h"
 #include "ReturnToTrack.h"
 
 class AIController : public Controller

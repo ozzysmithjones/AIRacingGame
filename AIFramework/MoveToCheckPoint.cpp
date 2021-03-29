@@ -24,7 +24,7 @@ BehaviourState MoveToCheckPoint::Update(const float deltaTime, Behaviour*& child
 	//move towards checkpoint.
 	if (distance > 16.0f)
 	{
-		m_vehicle->MoveTowardsPoint(nextCheckPoint, false);
+		m_vehicle->MoveTowards(deltaTime, nextCheckPoint, false,true);
 		return BehaviourState::SUCCESS;
 	}
 
