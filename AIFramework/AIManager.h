@@ -46,5 +46,6 @@ private:
 	VecPathIndecies		    m_path;
 	VecPathIndecies         m_checkPoints;
 	vecPathCoordinates      m_checkPointCoords;
+	vecPathCoordinates      m_pathPointCoords;
 };
 

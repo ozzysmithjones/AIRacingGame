@@ -74,7 +74,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     
     for (unsigned int i = 0; i < m_waypoints.size(); i++) 
     {
-        weights[i] = m_waypoints[i]->isOnTrack() ? 1 : 1000;
+        weights[i] = m_waypoints[i]->isOnTrack() ? 1 : -1;
 
         
         if (m_waypoints[i]->isCheckPoint())
@@ -109,27 +109,26 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
         }
     }
 
-    std::vector<Vector2D> pathPointCoords;
-
     for (auto p : m_path)
     {
         XMFLOAT3* pos = m_waypoints[p]->getPosition();
-        pathPointCoords.push_back(Vector2D(pos->x,pos->y));
+        m_pathPointCoords.push_back(Vector2D(pos->x,pos->y));
     }
 
     for (auto c : m_cars)
     {
-        c->setController(new AIController(c, m_cars, m_pickups, pathPointCoords, m_checkPointCoords, 100));
+        c->setController(new AICarBehaviourTree(c, m_cars, m_pickups, m_pathPointCoords, m_checkPointCoords, 100));
     }
     return hr;
 }
 
 void AIManager::update(const float fDeltaTime)
 {
-    
+   
+
     for (unsigned int i = 0; i < m_waypoints.size(); i++) {
-        m_waypoints[i]->update(fDeltaTime);
-        AddItemToDrawList(m_waypoints[i]); // if you comment this in, it will display the waypoints
+        m_waypoints[i]->update(fDeltaTime);// if you comment this in, it will display the waypoints
+        AddItemToDrawList(m_waypoints[i]);
     }
 
     for (unsigned int i = 0; i < m_pickups.size(); i++) {

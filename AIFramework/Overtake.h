@@ -1,16 +1,17 @@
 #pragma once
 #include "BehaviourTree.h"
-#include "Vector2D.h"
+#include "Spline.h"
 #include "Vehicle.h"
 
-class MoveToCheckPoint :
+class Overtake :
 	public Behaviour
 {
-private:
 
-	Vehicle* m_vehicle;
-	SplineCurve m_checkPoints;
-	int m_checkPointIndex = 0;
+private:
+	float m_roadRadius = 100.0f;
+	Vehicle*     m_vehicle;
+	SplineCurve m_splinePath;
+	std::vector<Vehicle*>& m_vehicles;
 
 	// Inherited via Behaviour
 	virtual void Reset() override;
@@ -18,8 +19,10 @@ private:
 	virtual BehaviourState Resume(Behaviour* child, BehaviourState childBehaviourState) override;
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 
+	bool OnTrack(Vector2D point);
+
 public:
 
-	MoveToCheckPoint(Vehicle* vehicle, std::vector<Vector2D>& checkpoints);
+	Overtake(Vehicle* m_vehicle,std::vector<Vector2D>& checkpoints, std::vector<Vehicle*>& vehicles);
 };
 

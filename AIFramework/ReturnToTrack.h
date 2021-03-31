@@ -11,7 +11,7 @@ class ReturnToTrack :
 
 private:
 
-	float m_pathWidth = 40.0f;
+	float m_roadRadius = 40.0f;
 	Vector2D m_pathDirection;
 	Vector2D m_pathResumePoint;
 	

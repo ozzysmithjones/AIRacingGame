@@ -27,7 +27,7 @@ public:
 	Vector2D GetSplineGradient(float distance);
 
 	Vector2D operator[](int index) { return points[index]; };
-	size_t Size() { return points.size(); };
+	size_t size() { return points.size(); };
 
 	//SplineCurve();
 	SplineCurve(std::vector<Vector2D>& points);

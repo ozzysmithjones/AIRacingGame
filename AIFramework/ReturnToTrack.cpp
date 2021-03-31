@@ -24,10 +24,10 @@ BehaviourState ReturnToTrack::Update(const float deltaTime, Behaviour*& childToP
 	Vector2D predicted = m_vehicle->getPredictedPosition(deltaTime);
 	Vector2D toRoad = (m_pathResumePoint - predicted);
 
-	if (toRoad.Length() > m_pathWidth)
+	if (toRoad.Length() > m_roadRadius)
 	{
 		m_vehicle->MoveTowards(deltaTime, m_pathResumePoint, true,false);
-		return BehaviourState::RUNNING;
+		return BehaviourState::SUCCESS;
 	}
 
 	return BehaviourState::SUCCESS;
@@ -37,5 +37,5 @@ ReturnToTrack::ReturnToTrack(Vehicle* vehicle, std::vector<Vector2D>& path, floa
 {
 	m_vehicle = vehicle;
 	m_path = path;
-	m_pathWidth = pathWidth;
+	m_roadRadius = pathWidth;
 }

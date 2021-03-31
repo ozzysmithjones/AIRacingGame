@@ -36,6 +36,7 @@ public://[getters/setters for velocity, position, direction, or AI controller]
 
 	Controller* getController() const { return m_controller; }
 	Circle GetTurnCircle() const { return m_turnCircle; }
+	Circle CalculateTurnCircle(float rotationDirection);
 	Vector2D getVehiclePosition() const { return m_currentPosition; }
 	Vector2D getVehicleDirection() const { return m_direction; }
 	Vector2D getPredictedPosition(float time);
@@ -43,6 +44,8 @@ public://[getters/setters for velocity, position, direction, or AI controller]
 	float getCurrentSpeed() const { return m_currentSpeed; }
 	float getAngularVelocity() const { return m_currentAngularVelocity; }
 
+	float getBreakDistance() { return (1.0f / breakSpeed) * m_currentSpeed; }
+	
 	~Vehicle();
 
 private://[radian math functions]
@@ -53,10 +56,11 @@ private://[radian math functions]
 	float getClockwise(float a, float b, float maxProximity = 0.01f); //get's the shortest path between two angles.(1 = clockwise, -1 = anti-clockwise)
 
 	bool PointInTurnCircle(Vector2D point, Vector2D moveDirection, float rotationDirection, float speed);
+	
 
 private:
 
-	float accelerateSpeed = 1.0f;
+	float accelerateSpeed = 0.5f;
 	float breakSpeed = 1.0f;
 
 	float m_maxSpeed;

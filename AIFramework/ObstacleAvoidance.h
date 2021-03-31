@@ -18,6 +18,7 @@ private:
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 
 	void CheckForCollisions();
+	bool LineIntersectCircle(Vector2D lineOrigin, Vector2D lineVector, Vector2D point, double radius);
 
 public:
 

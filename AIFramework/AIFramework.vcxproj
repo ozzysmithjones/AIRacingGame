@@ -373,6 +373,7 @@
     </ClCompile>
     <ClCompile Include="MoveToCheckPoint.cpp" />
     <ClCompile Include="ObstacleAvoidance.cpp" />
+    <ClCompile Include="Overtake.cpp" />
     <ClCompile Include="PickupItem.cpp" />
     <ClCompile Include="PriorityQueue.cpp" />
     <ClCompile Include="FiniteStateMachine.cpp" />
@@ -396,6 +397,7 @@
     </ClInclude>
     <ClInclude Include="MoveToCheckPoint.h" />
     <ClInclude Include="ObstacleAvoidance.h" />
+    <ClInclude Include="Overtake.h" />
     <ClInclude Include="PickupItem.h" />
     <ClInclude Include="PriorityQueue.h" />
     <CLInclude Include="resource.h" />

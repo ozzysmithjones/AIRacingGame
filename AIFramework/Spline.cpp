@@ -60,7 +60,7 @@ Vector2D SplineCurve::GetNearestLinePoint(Vector2D point, int& startIndex, int& 
 			return point;
 			
 		double lineDot = hypotemuse.Dot(line);
-		double linePercent = lineDot / line.LengthSq();
+		double linePercent = lineDot / line.Length();
 
 		if (linePercent > 1)
 			linePercent = 1;

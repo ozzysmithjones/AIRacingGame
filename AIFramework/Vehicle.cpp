@@ -9,11 +9,12 @@ HRESULT	Vehicle::initMesh(ID3D11Device* pd3dDevice)
 
 	HRESULT hr = DrawableGameObject::initMesh(pd3dDevice);
 
-	m_maxSpeed = 200;
-	m_currentSpeed = m_maxSpeed;
+	m_maxSpeed = 400;
+	m_currentSpeed = m_maxSpeed * 0.5f;
 	m_currentNormalisedSpeed = 1;
 	m_currentAngularVelocity = 1.0f;
 	m_direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
+
 	//setVehiclePosition(Vector2D(0, 0));
 	return hr;
 }
@@ -103,6 +104,19 @@ bool Vehicle::PointInTurnCircle(Vector2D point, Vector2D moveDirection, float ro
 	}
 }
 
+Circle Vehicle::CalculateTurnCircle(float rotationDirection)
+{
+	float radius = m_currentSpeed / (m_currentAngularVelocity * PI);
+
+	Vector2D directionToCenter = rotationDirection < 0 ? Vector2D(m_direction.y, -m_direction.x) : Vector2D(-m_direction.y, m_direction.x);
+	Vector2D center = (directionToCenter * radius) + m_currentPosition;
+
+	m_turnCircle.radius = radius;
+	m_turnCircle.center = center;
+
+	return m_turnCircle;
+}
+
 /*
 void Vehicle::SlowInTurnCircle(float deltaTime,float clockwise, Vector2D& direction)
 {
@@ -152,6 +166,18 @@ void Vehicle::MoveTowards(float deltaTime, Vector2D position, bool slowToTarget,
 		float distance = diff.Length();
 		float breakDistance = (1.0f / breakSpeed) * m_currentSpeed;
 
+		/*
+		if (m_currentNormalisedSpeed < 0.5f)
+		{
+			Accelerate(deltaTime);
+		}
+		else if (m_currentNormalisedSpeed > 0.5f)
+		{
+			Break(deltaTime);
+		}
+		*/
+
+		
 		if (slowToTarget && distance <= breakDistance)
 		{
 			SetNormalisedSpeed(m_currentNormalisedSpeed - breakSpeed * deltaTime);
@@ -160,6 +186,7 @@ void Vehicle::MoveTowards(float deltaTime, Vector2D position, bool slowToTarget,
 		{
 			SetNormalisedSpeed(m_currentNormalisedSpeed + accelerateSpeed * deltaTime);
 		}
+		
 
 		RotateTowards(deltaTime, position,correctTurnCircle);
 		m_currentPosition += m_direction * deltaTime * m_currentSpeed;

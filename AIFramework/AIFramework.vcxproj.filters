@@ -44,6 +44,9 @@
     <ClCompile Include="MoveToCheckPoint.cpp">
       <Filter>AI\CarBehaviourTree</Filter>
     </ClCompile>
+    <ClCompile Include="Overtake.cpp">
+      <Filter>AI\CarBehaviourTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIManager.h" />
@@ -94,6 +97,9 @@
     <ClInclude Include="MoveToCheckPoint.h">
       <Filter>AI\CarBehaviourTree</Filter>
     </ClInclude>
+    <ClInclude Include="Overtake.h">
+      <Filter>AI\CarBehaviourTree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\blue.dds">
@@ -142,6 +148,9 @@
     </Filter>
     <Filter Include="AI\CarBehaviourTree">
       <UniqueIdentifier>{f70d954f-896d-4963-842d-170f28134a92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\CarFiniteStateMachine">
+      <UniqueIdentifier>{4285dc2d-0e9c-47fb-a8ef-7ad008ae42fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
