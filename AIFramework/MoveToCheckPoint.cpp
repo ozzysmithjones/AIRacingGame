@@ -2,7 +2,7 @@
 
 void MoveToCheckPoint::Reset()
 {
-	m_checkPointIndex = 0;
+	m_pathIndex = 0;
 }
 
 void MoveToCheckPoint::Start()
@@ -21,39 +21,38 @@ BehaviourState MoveToCheckPoint::Update(const float deltaTime, Behaviour*& child
 
 	//if we have moved around the checkpoint, re-calculate our next checkpoint.
 	int startNode; int endNode;
-	m_checkPoints.GetNearestLinePoint(position, startNode, endNode);
-	int diff = abs(endNode - m_checkPointIndex);
+	m_path.GetNearestLinePoint(position, startNode, endNode);
+	int diff = abs(endNode - m_pathIndex);
 
-	if (endNode > m_checkPointIndex && diff < m_checkPoints.size() / 2)
+	if (endNode > m_pathIndex && diff < m_path.size() / 2)
 	{
-		m_checkPointIndex = endNode;
+		m_pathIndex = endNode;
 	}
-	else if (endNode < m_checkPointIndex && diff > m_checkPoints.size() / 2)
+	else if (endNode < m_pathIndex && diff > m_path.size() / 2)
 	{
-		m_checkPointIndex = endNode;
+		m_pathIndex = endNode;
 	}
 
 	//go to next checkpoint.
-	Vector2D nextCheckPoint = m_checkPoints[m_checkPointIndex];
-	float distance = (nextCheckPoint - position).Length();
+	Vector2D nextPathPoint = m_path[m_pathIndex];
+	float distance = (nextPathPoint - position).Length();
 
 	//move towards checkpoint.
 	if (distance > 16.0f)
 	{
 		//m_vehicle->Accelerate(deltaTime);
-		m_vehicle->MoveTowards(deltaTime, nextCheckPoint, false,true);
+		m_vehicle->MoveTowards(deltaTime, nextPathPoint, false,true);
 		return BehaviourState::SUCCESS;
 	}
 
-	//update next checkpoint
-	m_checkPointIndex++;
-	if (m_checkPointIndex >= m_checkPoints.size())
-		m_checkPointIndex = 0;
+	m_pathIndex++;
+	if (m_pathIndex >= m_path.size())
+		m_pathIndex = 0;
 
 	return BehaviourState::SUCCESS;
 }
 
-MoveToCheckPoint::MoveToCheckPoint(Vehicle* vehicle, std::vector<Vector2D>& checkpoints) : m_checkPoints(checkpoints)
+MoveToCheckPoint::MoveToCheckPoint(Vehicle* vehicle, std::vector<Vector2D>& path, std::vector<Vector2D>& checkpoints) : m_path(path), m_checkpoints(checkpoints)
 {
 	m_vehicle = vehicle;
 }

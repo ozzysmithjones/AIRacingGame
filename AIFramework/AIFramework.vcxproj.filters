@@ -44,6 +44,18 @@
     <ClCompile Include="MoveToCheckPoint.cpp">
       <Filter>AI\CarBehaviourTree</Filter>
     </ClCompile>
+    <ClCompile Include="VehicleStateMachine.cpp">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="ChaseState.cpp">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="FleeState.cpp">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArriveState.cpp">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClCompile>
     <ClCompile Include="Overtake.cpp">
       <Filter>AI\CarBehaviourTree</Filter>
     </ClCompile>
@@ -96,6 +108,18 @@
     </ClInclude>
     <ClInclude Include="MoveToCheckPoint.h">
       <Filter>AI\CarBehaviourTree</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleStateMachine.h">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="ChaseState.h">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="FleeState.h">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArriveState.h">
+      <Filter>AI\CarFiniteStateMachine</Filter>
     </ClInclude>
     <ClInclude Include="Overtake.h">
       <Filter>AI\CarBehaviourTree</Filter>

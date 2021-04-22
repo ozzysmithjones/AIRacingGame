@@ -361,13 +361,16 @@
   <ItemGroup>
     <ClCompile Include="AIController.cpp" />
     <ClCompile Include="AIManager.cpp" />
+    <ClCompile Include="ArriveState.cpp" />
     <ClCompile Include="AStar.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="BehaviourTree.cpp" />
+    <ClCompile Include="ChaseState.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DrawableGameObject.cpp" />
     <ClCompile Include="Event.cpp" />
+    <ClCompile Include="FleeState.cpp" />
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -380,18 +383,22 @@
     <ClCompile Include="ReturnToTrack.cpp" />
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Vehicle.cpp" />
+    <ClCompile Include="VehicleStateMachine.cpp" />
     <ClCompile Include="Waypoint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIController.h" />
     <ClInclude Include="AIManager.h" />
+    <ClInclude Include="ArriveState.h" />
     <ClInclude Include="AStar.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="BehaviourTree.h" />
+    <ClInclude Include="ChaseState.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="DrawableGameObject.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="FleeState.h" />
     <ClInclude Include="main.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
@@ -407,6 +414,7 @@
     <ClInclude Include="structures.h" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="Vehicle.h" />
+    <ClInclude Include="VehicleStateMachine.h" />
     <ClInclude Include="Waypoint.h" />
     <ResourceCompile Include="AIFramework.rc" />
   </ItemGroup>

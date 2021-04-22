@@ -25,21 +25,23 @@ BehaviourState ObstacleAvoidance::Update(const float deltaTime, Behaviour*& chil
 		Vector2D toOther = otherPosition - position;
 		float distance = toOther.LengthSq();
 
-		bool infront = LineIntersectCircle(position, direction, otherPosition, m_radius);
-		if (infront && distance < breakDistance * breakDistance)
+		bool infront = LineIntersectCircle(position, direction, otherPosition, m_radius * 0.5f);
+		if (infront && distance - (m_radius * m_radius * 0.5f) < breakDistance * breakDistance)
 		{
 			m_vehicle->Break(deltaTime);
 		}
-
+		
 		if ((distance < m_radius * m_radius || (distance < turnCircle.radius * turnCircle.radius && infront)) && toOther.Dot(direction) >= 0.0f) 
 		{
 			m_vehicle->RotateAwayFrom(deltaTime, otherPosition);
 			m_vehicle->Move(deltaTime);
-			return BehaviourState::RUNNING;
+			return BehaviourState::SUCCESS;
 		}
+
+
 	}
 
-	return BehaviourState::SUCCESS;
+	return BehaviourState::FAIL;
 }
 
 void ObstacleAvoidance::CheckForCollisions()

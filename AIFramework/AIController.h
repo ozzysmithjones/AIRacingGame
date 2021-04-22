@@ -4,9 +4,9 @@
 #include "BehaviourTree.h"
 
 //behaviours for behaviour tree
+#include "Overtake.h"
 #include "MoveToCheckPoint.h"
 #include "ObstacleAvoidance.h"
-#include "Overtake.h"
 #include "ReturnToTrack.h"
 
 class AICarBehaviourTree : public Controller

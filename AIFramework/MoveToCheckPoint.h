@@ -9,8 +9,9 @@ class MoveToCheckPoint :
 private:
 
 	Vehicle* m_vehicle;
-	SplineCurve m_checkPoints;
-	int m_checkPointIndex = 0;
+	SplineCurve m_path;
+	std::vector<Vector2D>& m_checkpoints;
+	int m_pathIndex = 0;
 
 	// Inherited via Behaviour
 	virtual void Reset() override;
@@ -20,6 +21,6 @@ private:
 
 public:
 
-	MoveToCheckPoint(Vehicle* vehicle, std::vector<Vector2D>& checkpoints);
+	MoveToCheckPoint(Vehicle* vehicle, std::vector<Vector2D>& path, std::vector<Vector2D>& checkpoints);
 };
 

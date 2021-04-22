@@ -30,7 +30,7 @@ BehaviourState ReturnToTrack::Update(const float deltaTime, Behaviour*& childToP
 		return BehaviourState::SUCCESS;
 	}
 
-	return BehaviourState::SUCCESS;
+	return BehaviourState::FAIL;
 }
 
 ReturnToTrack::ReturnToTrack(Vehicle* vehicle, std::vector<Vector2D>& path, float pathWidth)

@@ -8,10 +8,11 @@ AICarBehaviourTree::AICarBehaviourTree(Vehicle* vehicle,std::vector<Vehicle*>& v
 	Behaviour* behaviours[3];
 	behaviours[0] = new ObstacleAvoidance(vehicle, vecVehicles);
 	behaviours[1] = new ReturnToTrack(vehicle, path, 80.0f);
-    behaviours[2] = new MoveToCheckPoint(vehicle, path);
-	SequencerBehaviour* sequencer = new SequencerBehaviour(behaviours,3);
+	//behaviours[2] = new Overtake(vehicle, vecVehicles, checkPoints);
+    behaviours[2] = new MoveToCheckPoint(vehicle, path,checkPoints);
+	SelectorBehaviour* root = new SelectorBehaviour(behaviours,3);
 
-	m_behaviourTree = new BehaviourTree(sequencer);
+	m_behaviourTree = new BehaviourTree(root);
 }
 
 AICarBehaviourTree::~AICarBehaviourTree()

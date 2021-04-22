@@ -22,19 +22,23 @@ void AIManager::Release()
 HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 {
 
-    // create a pickup item ----------------------------------------------
+    HRESULT hr;
+    // create pickup items ----------------------------------------------
 
-    PickupItem* pPickup = new PickupItem();
-    HRESULT hr = pPickup->initMesh(pd3dDevice);
-    m_pickups.push_back(pPickup);
+    for (unsigned int i = 0; i < 10; i++)
+    {
 
+        PickupItem* pPickup = new PickupItem();
+        hr = pPickup->initMesh(pd3dDevice);
+        m_pickups.push_back(pPickup);
+    }
 
     // create the vehicle ------------------------------------------------
 
     float xPos = 0;
     float yPos = 200;
 
-    int numCars = 3;
+    int numCars = 10;
 
     for (unsigned int i = 0; i < numCars; i++) 
     {
@@ -74,9 +78,10 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     
     for (unsigned int i = 0; i < m_waypoints.size(); i++) 
     {
-        weights[i] = m_waypoints[i]->isOnTrack() ? 1 : -1;
+        weights[i] = m_waypoints[i]->isOnTrack() ? 10 : -1;
 
         
+        //add check point to array of checkpoints.
         if (m_waypoints[i]->isCheckPoint())
         {
             int checkPointIndex = m_waypoints[i]->getCheckpointIndex();
@@ -88,10 +93,18 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
             }
 
             m_checkPoints[checkPointIndex] = i;
-
             XMFLOAT3* pos = m_waypoints[i]->getPosition();
             m_checkPointCoords[checkPointIndex] = Vector2D(pos->x, pos->y);
         }
+    }
+
+    //go through each pickup and set it to a random position.
+    for (auto pickup : m_pickups)
+    {
+        int index = rand() % m_waypoints.size();
+        XMFLOAT3* pos = m_waypoints[index]->getPosition();
+        pickup->setPosition(XMFLOAT3(pos->x,pos->y,pickup->getPosition()->z));
+        weights[index] = 3;
     }
 
     //Pathfind from checkpoint to checkpoint.
@@ -115,17 +128,18 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
         m_pathPointCoords.push_back(Vector2D(pos->x,pos->y));
     }
 
+
+    //add controlllers to the cars using the path finding stuff.
     for (auto c : m_cars)
     {
         c->setController(new AICarBehaviourTree(c, m_cars, m_pickups, m_pathPointCoords, m_checkPointCoords, 100));
     }
+
     return hr;
 }
 
 void AIManager::update(const float fDeltaTime)
 {
-   
-
     for (unsigned int i = 0; i < m_waypoints.size(); i++) {
         m_waypoints[i]->update(fDeltaTime);// if you comment this in, it will display the waypoints
         AddItemToDrawList(m_waypoints[i]);
@@ -149,7 +163,6 @@ void AIManager::update(const float fDeltaTime)
     m_waypoints[0]->setPosition(circleCenter);
     AddItemToDrawList(m_waypoints[0]);
     */
-    
 
     checkForCollisions();
 }
@@ -201,42 +214,48 @@ bool AIManager::checkForCollisions()
 
     XMVECTOR dummy;
 
-    // the car
-    XMVECTOR carPos;
-    XMVECTOR carScale;
-    XMMatrixDecompose(
-        &carScale,
-        &dummy,
-        &carPos,
-        XMLoadFloat4x4(m_cars[0]->getTransform())
-    );
-
-    XMFLOAT3 scale;
-    XMStoreFloat3(&scale, carScale);
-    BoundingSphere boundingSphereCar;
-    XMStoreFloat3(&boundingSphereCar.Center, carPos);
-    boundingSphereCar.Radius = scale.x;
-
-    // a pickup - !! NOTE it is only referring the first one in the list !!
-    XMVECTOR puPos;
-    XMVECTOR puScale;
-    XMMatrixDecompose(
-        &puScale,
-        &dummy,
-        &puPos,
-        XMLoadFloat4x4(m_pickups[0]->getTransform())
-    );
-
-    XMStoreFloat3(&scale, puScale);
-    BoundingSphere boundingSpherePU;
-    XMStoreFloat3(&boundingSpherePU.Center, puPos);
-    boundingSpherePU.Radius = scale.x;
-
-    // test
-    if (boundingSphereCar.Intersects(boundingSpherePU))
+    for (auto car : m_cars)
     {
-        OutputDebugStringA("Collision!\n");
-        return true;
+        // the car
+        XMVECTOR carPos;
+        XMVECTOR carScale;
+        XMMatrixDecompose(
+            &carScale,
+            &dummy,
+            &carPos,
+            XMLoadFloat4x4(m_cars[0]->getTransform())
+        );
+
+        XMFLOAT3 scale;
+        XMStoreFloat3(&scale, carScale);
+        BoundingSphere boundingSphereCar;
+        XMStoreFloat3(&boundingSphereCar.Center, carPos);
+        boundingSphereCar.Radius = scale.x;
+
+
+        for (auto pickup : m_pickups)
+        {
+            XMVECTOR puPos;
+            XMVECTOR puScale;
+            XMMatrixDecompose(
+                &puScale,
+                &dummy,
+                &puPos,
+                XMLoadFloat4x4(m_pickups[0]->getTransform())
+            );
+
+            XMStoreFloat3(&scale, puScale);
+            BoundingSphere boundingSpherePU;
+            XMStoreFloat3(&boundingSpherePU.Center, puPos);
+            boundingSpherePU.Radius = scale.x;
+
+            // test
+            if (boundingSphereCar.Intersects(boundingSpherePU))
+            {
+                OutputDebugStringA("Collision!\n");
+            }
+
+        }
     }
 
     return false;

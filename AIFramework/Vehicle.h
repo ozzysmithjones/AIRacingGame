@@ -28,12 +28,10 @@ public://[getters/setters for velocity, position, direction, or AI controller]
 
 	virtual HRESULT initMesh(ID3D11Device* pd3dDevice);
 	virtual void update(const float deltaTime);
-
 	void setController(Controller* controller) { m_controller = controller; }
 	void setVehiclePosition(Vector2D position);
 	void setMaxSpeed(const float maxSpeed) { m_maxSpeed = maxSpeed; }
 	void SetNormalisedSpeed(float speed);
-
 	Controller* getController() const { return m_controller; }
 	Circle GetTurnCircle() const { return m_turnCircle; }
 	Circle CalculateTurnCircle(float rotationDirection);
@@ -43,9 +41,10 @@ public://[getters/setters for velocity, position, direction, or AI controller]
 	float getMaxSpeed() const { return m_maxSpeed; }
 	float getCurrentSpeed() const { return m_currentSpeed; }
 	float getAngularVelocity() const { return m_currentAngularVelocity; }
-
 	float getBreakDistance() { return (1.0f / breakSpeed) * m_currentSpeed; }
-	
+	int getNextCheckPointIndex() const { return m_NextCheckpoint; }
+	void setNextCheckPointIndex(int index) { m_NextCheckpoint = index; }
+
 	~Vehicle();
 
 private://[radian math functions]
@@ -60,9 +59,9 @@ private://[radian math functions]
 
 private:
 
+	int  m_NextCheckpoint = 0;
 	float accelerateSpeed = 0.5f;
-	float breakSpeed = 1.0f;
-
+	float breakSpeed = 2.0f;
 	float m_maxSpeed;
 	float m_currentNormalisedSpeed;
 	float m_currentSpeed;

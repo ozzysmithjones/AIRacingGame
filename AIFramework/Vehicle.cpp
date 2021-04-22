@@ -10,9 +10,10 @@ HRESULT	Vehicle::initMesh(ID3D11Device* pd3dDevice)
 	HRESULT hr = DrawableGameObject::initMesh(pd3dDevice);
 
 	m_maxSpeed = 400;
+	m_NextCheckpoint = 0;
 	m_currentSpeed = m_maxSpeed * 0.5f;
 	m_currentNormalisedSpeed = 1;
-	m_currentAngularVelocity = 1.0f;
+	m_currentAngularVelocity = 2.0f;
 	m_direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
 
 	//setVehiclePosition(Vector2D(0, 0));
@@ -161,33 +162,21 @@ void Vehicle::SetNormalisedSpeed(float speed)
 void Vehicle::MoveTowards(float deltaTime, Vector2D position, bool slowToTarget, bool correctTurnCircle)
 {
 	Vector2D diff = position - m_currentPosition;
+
 	if (diff.LengthSq() > 9.0f)
 	{
-		float distance = diff.Length();
 		float breakDistance = (1.0f / breakSpeed) * m_currentSpeed;
+		float distance = diff.Length();
 
-		/*
-		if (m_currentNormalisedSpeed < 0.5f)
-		{
-			Accelerate(deltaTime);
-		}
-		else if (m_currentNormalisedSpeed > 0.5f)
-		{
-			Break(deltaTime);
-		}
-		*/
-
-		
 		if (slowToTarget && distance <= breakDistance)
 		{
 			SetNormalisedSpeed(m_currentNormalisedSpeed - breakSpeed * deltaTime);
 		}
-		else if(!correctTurnCircle)
+		else if (!correctTurnCircle)
 		{
 			SetNormalisedSpeed(m_currentNormalisedSpeed + accelerateSpeed * deltaTime);
 		}
 		
-
 		RotateTowards(deltaTime, position,correctTurnCircle);
 		m_currentPosition += m_direction * deltaTime * m_currentSpeed;
 	}
@@ -254,6 +243,7 @@ void Vehicle::RotateAwayFrom(float deltaTime, Vector2D point)
 	float m_targetRotation = atan2f(diff.y, diff.x);
 	float angleStep = deltaTime * PI * m_currentAngularVelocity;
 	float clockwise = getClockwise(m_radianRotation, m_targetRotation) * -1;
+
 
 	//rotation and direction
 	m_radianRotation = addRadian(clockwise * angleStep, m_radianRotation);
