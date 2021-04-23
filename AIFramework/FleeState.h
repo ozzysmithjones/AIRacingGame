@@ -9,7 +9,6 @@ private:
 
 	Vehicle* m_vehicle;
 	Vehicle* m_target;
-	std::vector<Vehicle*> m_targets;
 
 	// Inherited via State
 	virtual void Initialise() override;
@@ -20,6 +19,6 @@ private:
 
 public:
 
-	FleeState(Vehicle* vehicle, Vehicle*  targets[], int numTargets);
+	FleeState(Vehicle* vehicle, Vehicle*  target);
 };
 

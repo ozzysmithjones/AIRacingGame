@@ -8,9 +8,11 @@ class MoveToCheckPoint :
 {
 private:
 
+	
 	Vehicle* m_vehicle;
 	SplineCurve m_path;
 	std::vector<Vector2D>& m_checkpoints;
+	int m_laps = 0;
 	int m_pathIndex = 0;
 
 	// Inherited via Behaviour

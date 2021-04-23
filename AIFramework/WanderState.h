@@ -1,16 +1,16 @@
 #pragma once
-#include "Vector2D.h"
-#include "FiniteStateMachine.h"
-
 class Vehicle;
-class ArriveState :
+
+#include "FiniteStateMachine.h"
+class WanderState :
 	public State
 {
+
 private:
 
-	Vector2D& m_mousePosition;
+	const float m_aimSpeed = 100.0f;
+	float m_targetRotation;
 	Vehicle* m_vehicle;
-
 
 	// Inherited via State
 	virtual void Initialise() override;
@@ -19,8 +19,10 @@ private:
 	virtual void Leave() override;
 	virtual bool CanTransition() override;
 
+	inline float RandVal() { return static_cast <float> (rand()) / static_cast <float> (RAND_MAX); }
+
 public:
 
-	ArriveState(Vehicle* vehicle,Vector2D& mousePosition);
+	WanderState(Vehicle* vehicle);
 };
 

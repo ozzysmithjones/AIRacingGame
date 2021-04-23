@@ -7,7 +7,7 @@ void ChaseState::Initialise()
 
 void ChaseState::Enter()
 {
-	m_target = m_targets[rand() % m_targets.size()];
+
 }
 
 void ChaseState::Update(const float deltaTime)
@@ -32,15 +32,9 @@ bool ChaseState::CanTransition()
 	return true;
 }
 
-ChaseState::ChaseState(Vehicle* vehicle, Vehicle* targets[], int numTargets)
+ChaseState::ChaseState(Vehicle* vehicle, Vehicle* target)
 {
 	m_vehicle = vehicle;
-
-	for (unsigned int i = 0; i < numTargets; i++)
-	{
-		m_targets.push_back(targets[i]);
-	}
-
-	m_target = targets[0];
+	m_target = target;
 }
 

@@ -19,6 +19,13 @@ BehaviourState MoveToCheckPoint::Update(const float deltaTime, Behaviour*& child
 {
 	Vector2D position = m_vehicle->getVehiclePosition();
 
+	if (m_laps > 3)
+	{
+		m_vehicle->Break(deltaTime, 0.0f,0.5f);
+		m_vehicle->Move(deltaTime);
+		return BehaviourState::SUCCESS;
+	}
+
 	//if we have moved around the checkpoint, re-calculate our next checkpoint.
 	int startNode; int endNode;
 	m_path.GetNearestLinePoint(position, startNode, endNode);
@@ -27,10 +34,13 @@ BehaviourState MoveToCheckPoint::Update(const float deltaTime, Behaviour*& child
 	if (endNode > m_pathIndex && diff < m_path.size() / 2)
 	{
 		m_pathIndex = endNode;
+		m_vehicle->setNextCheckPointIndex(m_pathIndex);
 	}
 	else if (endNode < m_pathIndex && diff > m_path.size() / 2)
 	{
 		m_pathIndex = endNode;
+		m_laps++;
+		m_vehicle->setNextCheckPointIndex(m_pathIndex);
 	}
 
 	//go to next checkpoint.
@@ -46,9 +56,13 @@ BehaviourState MoveToCheckPoint::Update(const float deltaTime, Behaviour*& child
 	}
 
 	m_pathIndex++;
-	if (m_pathIndex >= m_path.size())
+	if (m_pathIndex >= m_path.size()) 
+	{
 		m_pathIndex = 0;
+		m_laps++;
+	}
 
+	m_vehicle->setNextCheckPointIndex(m_pathIndex);
 	return BehaviourState::SUCCESS;
 }
 

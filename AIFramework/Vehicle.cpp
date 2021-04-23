@@ -9,6 +9,7 @@ HRESULT	Vehicle::initMesh(ID3D11Device* pd3dDevice)
 
 	HRESULT hr = DrawableGameObject::initMesh(pd3dDevice);
 
+	m_NextCheckpoint = 0;
 	m_maxSpeed = 400;
 	m_NextCheckpoint = 0;
 	m_currentSpeed = m_maxSpeed * 0.5f;
@@ -217,11 +218,11 @@ void Vehicle::Accelerate(float deltaTime, float maxNormalisedSpeed)
 	}
 }
 
-void Vehicle::Break(float deltaTime, float minNormalisedSpeed)
+void Vehicle::Break(float deltaTime, float minNormalisedSpeed, float rate)
 {
 	if (m_currentNormalisedSpeed > minNormalisedSpeed)
 	{
-		SetNormalisedSpeed(m_currentNormalisedSpeed - deltaTime * breakSpeed);
+		SetNormalisedSpeed(m_currentNormalisedSpeed - deltaTime * breakSpeed * rate);
 	}
 	else 
 	{
@@ -274,6 +275,12 @@ void Vehicle::RotateTowards(float deltaTime, Vector2D point, bool correctTurnCir
 	//rotation and direction
 	m_radianRotation = addRadian(clockwise * angleStep, m_radianRotation);
 	m_direction = Vector2D(cosf(m_radianRotation), sinf(m_radianRotation));
+}
+
+void Vehicle::RotateTowards(float deltaTime, float radianRotation)
+{
+	float clockwise = getClockwise(m_radianRotation, radianRotation);
+	Rotate(deltaTime, clockwise);
 }
 
 

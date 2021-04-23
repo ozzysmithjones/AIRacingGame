@@ -7,7 +7,7 @@ void FleeState::Initialise()
 
 void FleeState::Enter()
 {
-	m_target = m_targets[rand() % m_targets.size()];
+
 }
 
 void FleeState::Update(const float deltaTime)
@@ -31,14 +31,8 @@ bool FleeState::CanTransition()
 	return true;
 }
 
-FleeState::FleeState(Vehicle* vehicle, Vehicle* targets[], int numTargets)
+FleeState::FleeState(Vehicle* vehicle, Vehicle* target)
 {
 	m_vehicle = vehicle;
-
-	for (unsigned int i = 0; i < numTargets; i++)
-	{
-		m_targets.push_back(targets[i]);
-	}
-
-	m_target = m_targets[0];
+	m_target = target;
 }

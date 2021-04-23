@@ -59,6 +59,12 @@
     <ClCompile Include="Overtake.cpp">
       <Filter>AI\CarBehaviourTree</Filter>
     </ClCompile>
+    <ClCompile Include="WanderState.cpp">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="IdleState.cpp">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIManager.h" />
@@ -123,6 +129,12 @@
     </ClInclude>
     <ClInclude Include="Overtake.h">
       <Filter>AI\CarBehaviourTree</Filter>
+    </ClInclude>
+    <ClInclude Include="WanderState.h">
+      <Filter>AI\CarFiniteStateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="IdleState.h">
+      <Filter>AI\CarFiniteStateMachine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

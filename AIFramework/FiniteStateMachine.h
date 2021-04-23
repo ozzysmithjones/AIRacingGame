@@ -1,15 +1,16 @@
 #pragma once
 #include <stdexcept>
 #include <unordered_map>
+#include <wtypes.h>
 
 class State
 {
 public:
+
 	virtual void Initialise() = 0;
 	virtual void Enter() = 0;
 	virtual void Update(const float deltaTime) = 0;
 	virtual void Leave() = 0;
-
 	virtual bool CanTransition() = 0;
 };
 
@@ -79,6 +80,8 @@ protected:
 
 public:
 
+	virtual void KeyPress(WPARAM key) = 0;
+	virtual void MouseUp(int x, int y) = 0;
 	void Update(const float deltaTime);
 	
 	FiniteStateMachine();

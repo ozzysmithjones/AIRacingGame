@@ -27,7 +27,6 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 
     for (unsigned int i = 0; i < 10; i++)
     {
-
         PickupItem* pPickup = new PickupItem();
         hr = pPickup->initMesh(pd3dDevice);
         m_pickups.push_back(pPickup);
@@ -35,7 +34,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
 
     // create the vehicle ------------------------------------------------
 
-    float xPos = 0;
+    float xPos = -10;
     float yPos = 200;
 
     int numCars = 10;
@@ -44,7 +43,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     {
         Vehicle* car = new Vehicle();
         hr = car->initMesh(pd3dDevice);
-        car->setVehiclePosition(Vector2D(xPos + i * 40, yPos));
+        car->setVehiclePosition(Vector2D(xPos - i * 40, yPos));
 
         if (FAILED(hr))
             return hr;
@@ -132,7 +131,7 @@ HRESULT AIManager::initialise(ID3D11Device* pd3dDevice)
     //add controlllers to the cars using the path finding stuff.
     for (auto c : m_cars)
     {
-        c->setController(new AICarBehaviourTree(c, m_cars, m_pickups, m_pathPointCoords, m_checkPointCoords, 100));
+        c->setController(new AICarController(c, m_cars, m_pickups, m_pathPointCoords, m_checkPointCoords, 100));
     }
 
     return hr;
@@ -169,12 +168,20 @@ void AIManager::update(const float fDeltaTime)
 
 void AIManager::mouseUp(int x, int y)
 {
-    int carMoved = rand() % m_cars.size();
-    //m_cars[carMoved]->MoveTowards(,Vector2D(x, y),true);
+    for (auto car : m_cars)
+    {
+        car->getController()->OnMouseUp(x, y);
+    }
 }
 
 void AIManager::keyPress(WPARAM param)
 {
+
+    for (auto car : m_cars)
+    {
+        car->getController()->OnKeyPress(param);
+    }
+
     switch (param)
     {
         case VK_NUMPAD0:
@@ -252,6 +259,7 @@ bool AIManager::checkForCollisions()
             // test
             if (boundingSphereCar.Intersects(boundingSpherePU))
             {
+                car->SetNormalisedSpeed(1);
                 OutputDebugStringA("Collision!\n");
             }
 

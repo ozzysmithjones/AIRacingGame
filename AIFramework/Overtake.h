@@ -9,6 +9,8 @@ class Overtake :
 	public Behaviour
 {
 private:
+
+	const int maxOvertakeRange = 6;
 	Vehicle* m_vehicleToOvertake;
 	Vehicle* m_vehicle;
 	std::vector<Vehicle*>& m_vehicles;
@@ -22,6 +24,8 @@ private:
 	virtual BehaviourState Update(const float deltaTime, Behaviour*& childToPush) override;
 
 	Vehicle* FindVehicleToOvertake();
+
+	Vector2D NearestPointOnLine(Vector2D lineStart, Vector2D lineEnd, Vector2D point);
 
 public:
 

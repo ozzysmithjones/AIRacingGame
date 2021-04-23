@@ -11,8 +11,7 @@ private:
 
 	Vehicle* m_vehicle;
 	Vehicle* m_target;
-	std::vector<Vehicle*> m_targets;
-	
+
 	// Inherited via State
 	virtual void Initialise() override;
 	virtual void Enter() override;
@@ -22,7 +21,6 @@ private:
 
 public:
 
-	ChaseState(Vehicle* vehicle, Vehicle* targets[], int numTargets);
-
+	ChaseState(Vehicle* vehicle, Vehicle* target);
 };
 

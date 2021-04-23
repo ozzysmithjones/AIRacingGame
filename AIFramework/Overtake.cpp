@@ -6,6 +6,7 @@ void Overtake::Reset()
 
 void Overtake::Start()
 {
+	
 }
 
 BehaviourState Overtake::Resume(Behaviour* child, BehaviourState childBehaviourState)
@@ -17,70 +18,84 @@ BehaviourState Overtake::Update(const float deltaTime, Behaviour*& childToPush)
 {
 	m_vehicleToOvertake = FindVehicleToOvertake();
 
+	int checkPoint = m_vehicle->getNextCheckPointIndex();
+	int previousCheckPoint = checkPoint > 0 ? checkPoint - 1 : m_splinePath.size() - 1;
+	Vector2D position = m_vehicle->getVehiclePosition();
+	Vector2D roadDirection = m_splinePath[checkPoint] - m_splinePath[previousCheckPoint];
+
 	if (m_vehicleToOvertake != nullptr)
 	{
-		m_vehicle->RotateTowards(deltaTime, m_vehicleToOvertake->getVehiclePosition() + m_vehicle->getVehicleDirection() * 30.0f, false);
-		m_vehicle->Move(deltaTime);
-		return BehaviourState::RUNNING;
+		Vector2D otherPosition = m_vehicleToOvertake->getVehiclePosition();
+		Vector2D otherDirection = m_vehicleToOvertake->getVehicleDirection();
+		Vector2D toOther = otherPosition - position;
+
+		if (toOther.Dot(roadDirection) > 0.0f)
+		{
+			Vector2D roadCenter = m_splinePath.GetNearestLinePoint(otherPosition);
+			Vector2D toRoadCenter = otherPosition - roadCenter;
+			toRoadCenter.Normalize();
+
+			Vector2D overtakePoint = otherPosition - toRoadCenter * 40.0f;
+
+			if (overtakePoint.DistanceSq(roadCenter) > (40.0f * 40.0f)) 
+			{
+				return BehaviourState::FAIL;
+			}
+
+			m_vehicle->MoveTowards(deltaTime, overtakePoint, false,false);
+			return BehaviourState::SUCCESS;
+		}
 	}
 
-	return BehaviourState::SUCCESS;
+	return BehaviourState::FAIL;
 }
 
 Vehicle* Overtake::FindVehicleToOvertake()
 {
 	Vector2D position = m_vehicle->getVehiclePosition();
-	
-	int startIndex, endIndex;
-	m_splinePath.GetNearestLinePoint(position, startIndex, endIndex);
-
-	Vector2D nextCheckpoint = m_splinePath[endIndex];
-	Vector2D toCheckpoint = nextCheckpoint - position;
-	float length = toCheckpoint.Length();
-	toCheckpoint = toCheckpoint / length;
-
-	if (toCheckpoint.Dot(m_vehicle->getVehicleDirection()) < 0.0)
-		return nullptr;
-
-	if (length <= 32)
-		return nullptr;
-
-	float closestDistance = length * length;
-	Vehicle* closestVehicle = nullptr;
+	int checkPoint = m_vehicle->getNextCheckPointIndex();
 
 	for (auto vehicle : m_vehicles)
 	{
 		if (vehicle == m_vehicle)
 			continue;
 
-		Vector2D otherPosition = vehicle->getVehiclePosition();
-		Vector2D otherToCheckPoint = nextCheckpoint - otherPosition;
-		float otherLength = otherToCheckPoint.Length();
-		otherToCheckPoint = otherToCheckPoint / otherLength;
+		int otherCheckPoint = vehicle->getNextCheckPointIndex();
+		int diffCheckpoint = abs(otherCheckPoint - checkPoint);
+		bool ahead = (otherCheckPoint > checkPoint && diffCheckpoint < m_splinePath.size() / 2) || (otherCheckPoint < checkPoint && diffCheckpoint > m_splinePath.size() / 2);
 
-		if (toCheckpoint.Dot(otherToCheckPoint) <= 0.0)
-			continue;
-
-		if (otherToCheckPoint.Dot(vehicle->getVehicleDirection()) <= 0.5)
-			continue;
-
-		if (otherLength > length)
-			continue;
-
-		float distanceToOther = position.DistanceSq(otherPosition);
-		if (distanceToOther <= closestDistance)
+		if (ahead && diffCheckpoint < maxOvertakeRange) 
 		{
-			closestVehicle = vehicle;
-			closestDistance = distanceToOther;
+			return vehicle;
 		}
 	}
 
-	return closestVehicle;
+	return  nullptr;
 }
 
-Overtake::Overtake(Vehicle* vehicle, std::vector<Vehicle*>& vehicles, std::vector<Vector2D>& waypoints) : m_vehicles(vehicles)
+Vector2D Overtake::NearestPointOnLine(Vector2D lineStart, Vector2D lineEnd, Vector2D point)
+{
+	//Get nearest point on line.
+	Vector2D line = lineEnd - lineStart;
+	Vector2D hypotemuse = point - lineStart;
+
+	if (isEqual(hypotemuse.x, 0) && isEqual(hypotemuse.y, 0))
+		return point;
+
+	double lineDot = hypotemuse.Dot(line);
+	double linePercent = lineDot / line.Length();
+
+	if (linePercent > 1)
+		linePercent = 1;
+	else if (linePercent < 0)
+		linePercent = 0;
+
+	return lineStart + line * linePercent;
+}
+
+Overtake::Overtake(Vehicle* vehicle, std::vector<Vehicle*>& vehicles, std::vector<Vector2D>& path) : m_vehicles(vehicles)
 {
 	m_vehicleToOvertake = nullptr;
 	m_vehicle = vehicle;
-	m_splinePath = SplineCurve(waypoints);
+	m_splinePath = SplineCurve(path);
 }

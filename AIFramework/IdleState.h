@@ -1,16 +1,13 @@
 #pragma once
-#include "Vector2D.h"
-#include "FiniteStateMachine.h"
-
 class Vehicle;
-class ArriveState :
+
+#include "FiniteStateMachine.h"
+class IdleState :
 	public State
 {
 private:
 
-	Vector2D& m_mousePosition;
 	Vehicle* m_vehicle;
-
 
 	// Inherited via State
 	virtual void Initialise() override;
@@ -21,6 +18,6 @@ private:
 
 public:
 
-	ArriveState(Vehicle* vehicle,Vector2D& mousePosition);
+	IdleState(Vehicle* vehicle);
 };
 

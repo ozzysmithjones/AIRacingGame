@@ -6,8 +6,6 @@ unsigned int FiniteStateMachine::TypeID::GetNextID()
 	return _id++;
 }
 
-
-
 void FiniteStateMachine::Update(const float deltaTime)
 {
 	if (m_currentState != nullptr)
